@@ -1,0 +1,36 @@
+CREATE TABLE restaurant_tables (id SERIAL PRIMARY KEY,
+    table_number INTEGER,
+    occupied BOOLEAN,
+    number_of_guests INTEGER);
+
+CREATE TABLE orders (id SERIAL PRIMARY KEY,
+    table_id INTEGER REFERENCES restaurant_tables,
+    paid BOOLEAN,
+    order_time TIMESTAMP WITHOUT TIME ZONE,
+    order_price NUMERIC);
+
+CREATE TABLE order_items (id SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders,
+    item_id INTEGER REFERENCES items,
+    quantity INTEGER,
+    price NUMERIC);
+
+CREATE TABLE items (id SERIAL PRIMARY KEY,
+    item_name VARCHAR(256),
+    item_price NUMERIC
+);
+
+INSERT INTO restaurant_tables (table_number, occupied, number_of_guests) VALUES
+(1, false, 0),
+(2, false, 0),
+(3, false, 0),
+(4, false, 0),
+(5, false, 0),
+(6, false, 0);
+
+INSERT INTO items (item_name, item_price) values
+('Beer', 3),
+('Noodles', 6),
+('Crispy Chicken', 6),
+('Garlic Bread', 4),
+('Coffee', 2.5);
