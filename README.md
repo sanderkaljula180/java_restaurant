@@ -33,6 +33,7 @@ Database:
   - item_price
 
 API's:
+- GET /api/items
 - GET /api/tables 
 - POST /api/tables/{id}/occupy
 - POST /api/tables/{id}/vacate
