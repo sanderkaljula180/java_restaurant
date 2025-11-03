@@ -37,4 +37,13 @@ public class Item {
     public void setItem_price(float item_price) {
         this.item_price = item_price;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", item_name='" + item_name + '\'' +
+                ", item_price=" + item_price +
+                '}';
+    }
 }

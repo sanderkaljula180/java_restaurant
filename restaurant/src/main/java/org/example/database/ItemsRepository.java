@@ -26,8 +26,6 @@ public class ItemsRepository {
                 Item item = new Item(id, item_name, item_price);
                 allItemsArrayList.add(item);
             }
-        } catch (Exception e) {
-            System.out.println(e);
         }
         return allItemsArrayList;
     }
