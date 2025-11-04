@@ -7,10 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class ItemsRepository {
+
     private final DBConnectionPool cp;
 
-    public ItemsRepository() {
-        this.cp = new DBConnectionPool();
+    public ItemsRepository(DBConnectionPool cp) {
+        this.cp = cp;
     }
 
     public ArrayList<Item> getAllItems() throws SQLException {
