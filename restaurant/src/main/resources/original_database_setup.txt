@@ -17,7 +17,8 @@ CREATE TABLE order_items (id SERIAL PRIMARY KEY,
 
 CREATE TABLE items (id SERIAL PRIMARY KEY,
     item_name VARCHAR(256),
-    item_price NUMERIC
+    item_price NUMERIC,
+    in_stock INTEGER
 );
 
 INSERT INTO restaurant_tables (table_number, occupied, number_of_guests) VALUES

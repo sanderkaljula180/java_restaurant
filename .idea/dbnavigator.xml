@@ -53,7 +53,8 @@ CREATE TABLE order_items (
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
     item_name VARCHAR(256),
-    item_price NUMERIC
+    item_price NUMERIC,
+    in_stock INTEGER
 );
 
 INSERT INTO restaurant_tables (table_number, occupied, number_of_guests) VALUES
@@ -63,6 +64,14 @@ INSERT INTO restaurant_tables (table_number, occupied, number_of_guests) VALUES
 (4, false, 0),
 (5, false, 0),
 (6, false, 0);
+
+INSERT INTO waitresses (name, is_available) VALUES
+('Mari', true),
+('Kari', true),
+('Sari', true),
+('Vali', true),
+('Bali', true),
+('Tali', true);
 
 INSERT INTO items (item_name, item_price) values
 ('Beer', 3),

@@ -14,6 +14,7 @@ public class ApiRouter {
     }
 
     public HttpServer serverRouter(HttpServer httpServer) throws IOException {
+
         httpServer.createContext("/api/items", itemController::getAllItems);
         return httpServer;
     }
