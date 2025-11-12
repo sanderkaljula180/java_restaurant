@@ -28,6 +28,7 @@ Database:
   - order_time (when was it ordered)
   - waitress_id (FK Waitress)
   - order_price
+  - is_ready (boolean)
 
 - OrderItem:
   - id
@@ -35,7 +36,7 @@ Database:
   - item_id (FK Item)
   - quantity
   - price
-  - is_completed
+  - is_completed (boolean)
 
 - Item:
   - id
@@ -44,11 +45,17 @@ Database:
   - in_stock
 
 API's:
-- GET /api/tables/free_tables
-  - This api is for overview view, gives us list of vacant tables with data: 
-    - Table id
-    - Table number
-    - Seat capacity
+- GET /api/tables
+    - This api is for host station and waitresses. They can see in what states are tables. Both occupied and vacant tables:
+        - Table id
+        - is_occupied
+        - Table number
+        - capacity
+        - number of quests
+        - status
+        - waitress
+        - orders
+            - order status
 
 - GET /api/tables/{id}/table_setup
     - This api is for vacant table configuration view. We only need table number,seat capacity and available waitresses.
@@ -56,26 +63,29 @@ API's:
       - Seat capacity
       - Available waitresses
 
-- GET /api/tables/occupied_tables
-  - table number
-  - number of quests
-  - waitress
-  - status
-  - orders (conditional, if status is NOT READY_FOR_ORDER or CHOOSING_ITEMS)
-    - order id
+- POST /api/tables/{id}/occupy
+    - Send how many quests
+    - Send who is the waitress
+    - also change waitress is_available boolean if needed
+    - Change table status to 'CHOOSING_ITEMS'
+
+- GET /api/orders
+  - This will send a list with all orders and its order_items. This is for kitchen
+    - Order id
+    - is_ready order
+    - table id
+    - order_time
     - order items
+      - order items quantity
+      - is_complete
 
 - POST /api/order-items/{id}/is_completed
   - changes order item is_completed to true
+  - Also check if all other order-items are done in parent Order. If they are then change Order is_ready to true
 
 - POST /api/order-items/{id}/not_completed
     - changes order item is_completed to false
-
-- POST /api/tables/{id}/occupy
-  - Send how many quests
-  - Send who is the waitress
-  - also change waitress is_available boolean if needed
-  - Change table status to 'CHOOSING_ITEMS'
+    - Also check if all other order-items are done in parent Order. If they are then change Order is_ready to false
 
 - POST /api/tables/{id}/ready_for_order
     - changes status to 'READY_FOR_ORDER'
@@ -87,7 +97,7 @@ API's:
 
 - POST /api/tables/{id}/add_order
   - Send order items
-  - Create order and order_item in database
+  - Create order and order_items in database
   - Change table status to 'WAITING_FOR_ORDER'
 
 - POST /api/tables/{id}/order_completed
@@ -99,6 +109,8 @@ API's:
 - POST /api/tables/{id}/vacate
   - Sets is_paid true
   - Sets table status to 'FREE'
+
+
 
 
 Table statuses:

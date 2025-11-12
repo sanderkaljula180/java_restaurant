@@ -5,6 +5,7 @@ import org.example.entities.Item;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemsRepository {
 
@@ -14,8 +15,8 @@ public class ItemsRepository {
         this.cp = cp;
     }
 
-    public ArrayList<Item> getAllItems() throws SQLException {
-        ArrayList<Item> allItemsArrayList = new ArrayList<>();
+    public List<Item> getAllItems() throws SQLException {
+        List<Item> allItemsArrayList = new ArrayList<>();
         String sqlStatement = "SELECT * FROM items;";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);

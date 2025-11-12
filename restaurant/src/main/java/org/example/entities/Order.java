@@ -8,16 +8,20 @@ public class Order {
     private boolean paid;
     private LocalDateTime order_time;
     private float order_price;
+    private int waitress_id;
+    private boolean ready;
 
     public Order() {
     }
 
-    public Order(int id, int table_id, boolean paid, LocalDateTime order_time, float order_price) {
+    public Order(int id, int table_id, boolean paid, LocalDateTime order_time, float order_price, int waitressId, boolean ready) {
         this.id = id;
         this.table_id = table_id;
         this.paid = paid;
         this.order_time = order_time;
         this.order_price = order_price;
+        this.waitress_id = waitressId;
+        this.ready = ready;
     }
 
     public int getId() {
@@ -58,5 +62,21 @@ public class Order {
 
     public void setOrder_price(float order_price) {
         this.order_price = order_price;
+    }
+
+    public int getWaitress_id() {
+        return waitress_id;
+    }
+
+    public void setWaitress_id(int waitress_id) {
+        this.waitress_id = waitress_id;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }

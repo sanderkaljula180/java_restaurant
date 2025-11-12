@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ItemController {
 
@@ -19,6 +19,7 @@ public class ItemController {
     }
 
     public void getAllItems(HttpExchange httpExchange) throws IOException {
+
         if (httpExchange.getRequestMethod().equals("GET")) {
             try {
                 LocalDateTime time =  LocalDateTime.now();
@@ -28,7 +29,8 @@ public class ItemController {
                 headers.add("Connection", "keep-alive");
                 httpExchange.sendResponseHeaders(200, 0);
                 OutputStream response = httpExchange.getResponseBody();
-                ArrayList<Item> allItems = itemsRepository.getAllItems();
+                List<Item> allItems = itemsRepository.getAllItems();
+                System.out.println(allItems);
                 String items = allItems.toString();
                 byte[] bytes = items.getBytes();
                 response.write(bytes);

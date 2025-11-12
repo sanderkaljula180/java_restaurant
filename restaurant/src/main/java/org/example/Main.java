@@ -2,9 +2,14 @@ package org.example;
 
 import com.sun.net.httpserver.HttpServer;
 import org.example.api.ItemController;
+import org.example.api.TablesController;
 import org.example.configuration.DBConnectionPool;
 import org.example.configuration.HttpServerConfiguration;
 import org.example.database.ItemsRepository;
+import org.example.database.OrderRepository;
+import org.example.database.TablesRepository;
+import org.example.database.WaitressRepository;
+import org.example.helpers.Mapper;
 import org.example.router.ApiRouter;
 
 import java.io.IOException;
@@ -14,9 +19,22 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         DBConnectionPool pool = new DBConnectionPool();
-        ItemsRepository repository = new ItemsRepository(pool);
-        ItemController itemController = new ItemController(repository);
-        ApiRouter apiRouter = new ApiRouter(itemController);
+        ItemsRepository itemsRepository = new ItemsRepository(pool);
+        TablesRepository tablesRepository = new TablesRepository(pool);
+        WaitressRepository waitressRepository = new WaitressRepository(pool);
+        OrderRepository orderRepository = new OrderRepository(pool);
+
+        Mapper mapper = new Mapper();
+
+        ItemController itemController = new ItemController(itemsRepository);
+        TablesController tablesController = new TablesController(
+                tablesRepository,
+                waitressRepository,
+                orderRepository,
+                mapper
+        );
+
+        ApiRouter apiRouter = new ApiRouter(itemController, tablesController);
         HttpServerConfiguration config = new HttpServerConfiguration(apiRouter);
         HttpServer httpServer = config.httpServer();
         httpServer.start();

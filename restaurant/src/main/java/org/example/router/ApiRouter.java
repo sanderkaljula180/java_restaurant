@@ -2,20 +2,23 @@ package org.example.router;
 
 import com.sun.net.httpserver.HttpServer;
 import org.example.api.ItemController;
+import org.example.api.TablesController;
 
 import java.io.IOException;
 
 public class ApiRouter {
 
     private final ItemController itemController;
+    private final TablesController tablesController;
 
-    public ApiRouter(ItemController itemController) {
+    public ApiRouter(ItemController itemController, TablesController tablesController) {
         this.itemController = itemController;
+        this.tablesController = tablesController;
     }
 
-    public HttpServer serverRouter(HttpServer httpServer) throws IOException {
+    public void serverRouter(HttpServer httpServer) throws IOException {
 
         httpServer.createContext("/api/items", itemController::getAllItems);
-        return httpServer;
+        httpServer.createContext("/api/tables", tablesController::getAllTables);
     }
 }
