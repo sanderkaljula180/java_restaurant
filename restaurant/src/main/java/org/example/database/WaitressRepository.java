@@ -16,7 +16,7 @@ public class WaitressRepository {
         this.cp = cp;
     }
 
-    public Waitress findWaitressNameById(int waitress_id) throws SQLException {
+    public Waitress findWaitressById(int waitress_id) throws SQLException {
         String sqlStatement = "SELECT id, name, is_available FROM waitresses WHERE id = ?";
         Waitress waitress = new Waitress();
         try (Connection connection = cp.createConnection()) {

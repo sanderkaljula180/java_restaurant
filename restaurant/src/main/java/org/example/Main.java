@@ -9,8 +9,11 @@ import org.example.database.ItemsRepository;
 import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
+import org.example.helpers.JsonResponseConverter;
 import org.example.helpers.Mapper;
 import org.example.router.ApiRouter;
+import org.example.services.TableService;
+import org.json.JSONArray;
 
 import java.io.IOException;
 
@@ -25,13 +28,19 @@ public class Main {
         OrderRepository orderRepository = new OrderRepository(pool);
 
         Mapper mapper = new Mapper();
+        JsonResponseConverter jsonResponseConverter = new JsonResponseConverter();
 
-        ItemController itemController = new ItemController(itemsRepository);
-        TablesController tablesController = new TablesController(
+        TableService tableService = new TableService(
                 tablesRepository,
                 waitressRepository,
                 orderRepository,
                 mapper
+        );
+
+        ItemController itemController = new ItemController(itemsRepository);
+        TablesController tablesController = new TablesController(
+                tableService,
+                jsonResponseConverter
         );
 
         ApiRouter apiRouter = new ApiRouter(itemController, tablesController);
