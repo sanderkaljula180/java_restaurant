@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WaitressRepository {
 
@@ -18,18 +20,39 @@ public class WaitressRepository {
 
     public Waitress findWaitressById(int waitress_id) throws SQLException {
         String sqlStatement = "SELECT id, name, is_available FROM waitresses WHERE id = ?";
-        Waitress waitress = new Waitress();
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, waitress_id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    waitress.setId(resultSet.getInt(1));
-                    waitress.setName(resultSet.getString(2));
-                    waitress.setAvailable(resultSet.getBoolean(3));
+                    return helperFroCreatingWaitressObj(resultSet);
                 }
             }
         }
+        return null;
+    }
+
+    public List<Waitress> findAllAvailableWaitresses() throws SQLException {
+        String sqlStatement = "SELECT * FROM waitresses WHERE is_available = true";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Waitress> waitresses = new ArrayList<>();
+                while (resultSet.next()) {
+                    waitresses.add(helperFroCreatingWaitressObj(resultSet));
+                }
+                return waitresses;
+            }
+        }
+    }
+
+    public Waitress helperFroCreatingWaitressObj(ResultSet resultSet) throws SQLException {
+        Waitress waitress = new Waitress(
+                resultSet.getInt("id"),
+                resultSet.getString("name"),
+                resultSet.getBoolean("is_available")
+        );
         return waitress;
     }
+
 }

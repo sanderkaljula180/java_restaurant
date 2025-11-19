@@ -1,6 +1,7 @@
 package org.example.helpers;
 
 import org.example.dto.TableDTO;
+import org.example.dto.TableSetupDTO;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
@@ -10,29 +11,34 @@ import java.util.List;
 
 public class Mapper {
 
-    public TableDTO toTableTdo(RestaurantTable restaurantTable, Waitress waitress, List<Order> orders) {
-        int table_id = restaurantTable.getId();
-        boolean occupied = restaurantTable.isOccupied();
-        int table_number = restaurantTable.getTable_number();
-        int capacity = restaurantTable.getTable_capacity();
-        int number_of_quests = restaurantTable.getNumber_of_guests();
-        String status = restaurantTable.getStatus();
-        String waitress_name = waitress.getName();
-        HashMap<Integer, Boolean> order_statuses = new HashMap<>();
+    public static TableDTO toTableDto(RestaurantTable restaurantTable, Waitress waitress, List<Order> orders) {
 
+        HashMap<Integer, Boolean> order_statuses = new HashMap<>();
         orders.forEach(order -> order_statuses.put(order.getId(), order.isReady()));
 
         return new TableDTO(
-                table_id,
-                occupied,
-                table_number,
-                capacity,
-                number_of_quests,
-                status,
-                waitress_name,
+                restaurantTable.getId(),
+                restaurantTable.isOccupied(),
+                restaurantTable.getTable_number(),
+                restaurantTable.getTable_capacity(),
+                restaurantTable.getNumber_of_guests(),
+                restaurantTable.getStatus(),
+                waitress.getName(),
                 order_statuses
                 );
     }
 
+    public static TableSetupDTO toTableSetupDto(RestaurantTable restaurantTable, List<Waitress> waitresses) {
+
+        HashMap<Integer, String> availableWaitresses = new HashMap<>();
+        waitresses.forEach(waitress -> availableWaitresses.put(waitress.getId(), waitress.getName()));
+
+        return new TableSetupDTO(
+                restaurantTable.getId(),
+                restaurantTable.getTable_number(),
+                restaurantTable.getTable_capacity(),
+                availableWaitresses
+        );
+    }
 
 }

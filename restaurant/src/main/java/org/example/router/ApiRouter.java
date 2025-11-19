@@ -17,8 +17,8 @@ public class ApiRouter {
     }
 
     public void serverRouter(HttpServer httpServer) throws IOException {
-
-        httpServer.createContext("/api/items", itemController::getAllItems);
-        httpServer.createContext("/api/tables", tablesController::getAllTables);
+        httpServer.createContext("/api/items/", itemController::getAllItems);
+        httpServer.createContext("/api/tables/", tablesController::getAllTables);
+        httpServer.createContext("/api/tables/table_setup/", tablesController::getTableForSetup);
     }
 }

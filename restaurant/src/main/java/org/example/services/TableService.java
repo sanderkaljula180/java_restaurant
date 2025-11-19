@@ -4,8 +4,12 @@ import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
 import org.example.dto.TableDTO;
+import org.example.dto.TableSetupDTO;
 import org.example.entities.RestaurantTable;
+import org.example.entities.Waitress;
 import org.example.helpers.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,16 +18,15 @@ import static java.util.stream.Collectors.toList;
 
 public class TableService {
 
+    private static final Logger log = LoggerFactory.getLogger(TableService.class);
     private final TablesRepository tablesRepository;
     private final WaitressRepository waitressRepository;
     private final OrderRepository orderRepository;
-    private final Mapper mapper;
 
-    public TableService(TablesRepository tablesRepository, WaitressRepository waitressRepository, OrderRepository orderRepository, Mapper mapper) {
+    public TableService(TablesRepository tablesRepository, WaitressRepository waitressRepository, OrderRepository orderRepository) {
         this.tablesRepository = tablesRepository;
         this.waitressRepository = waitressRepository;
         this.orderRepository = orderRepository;
-        this.mapper = mapper;
     }
 
     public List<TableDTO> getAllTables() throws SQLException {
@@ -31,7 +34,7 @@ public class TableService {
         List<TableDTO> tableDTOList = restaurantTableList.stream()
                 .map(table -> {
                     try {
-                        return mapper.toTableTdo(
+                        return Mapper.toTableDto(
                                 table,
                                 waitressRepository.findWaitressById(table.getWaitress_id()),
                                 orderRepository.findOrderByRestaurantTableId(table.getId())
@@ -41,5 +44,28 @@ public class TableService {
                     }
                 }).collect(toList());
         return tableDTOList;
+    }
+
+    // Just in case I have to validate also if that table is occupied or not.
+    // Also custom Exception for if table is not actually available.Also waitress
+    // Then I will call that custom exception and catch it in controller layer and
+    // call a new method that sends back correct OutputStream response
+    public TableSetupDTO getTableForSetup(int tableId) throws SQLException {
+        RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
+        if (restaurantTable == null) {
+            log.error("This table is not available. Try again.");
+            throw new RuntimeException("This table is not available. Try again.");
+        }
+
+        List<Waitress> waitresses = waitressRepository.findAllAvailableWaitresses();
+        if (waitresses.isEmpty()) {
+            log.error("No available waitresses currently.");
+            throw new RuntimeException("No available waitresses currently.");
+        }
+
+        return Mapper.toTableSetupDto(
+                restaurantTable,
+                waitresses
+        );
     }
 }

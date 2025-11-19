@@ -59,6 +59,7 @@ API's:
 
 - GET /api/tables/{id}/table_setup
     - This api is for vacant table configuration view. We only need table number,seat capacity and available waitresses.
+      - Table id
       - Table number
       - Seat capacity
       - Available waitresses

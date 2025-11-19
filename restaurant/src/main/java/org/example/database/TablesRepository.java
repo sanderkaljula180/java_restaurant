@@ -19,25 +19,43 @@ public class TablesRepository {
     }
 
     public List<RestaurantTable> getAllTables() throws SQLException {
-        List<RestaurantTable> restaurantTableList = new ArrayList<>();
         String sqlStatement = "SELECT * FROM restaurant_tables";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-               RestaurantTable restaurantTable = new RestaurantTable(
-                       resultSet.getInt(1),
-                       resultSet.getInt(2),
-                       resultSet.getBoolean(3),
-                       resultSet.getInt(4),
-                       resultSet.getInt(5),
-                       resultSet.getInt(6),
-                       resultSet.getString(7)
-               );
-               restaurantTableList.add(restaurantTable);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<RestaurantTable> restaurantTableList = new ArrayList<>();
+                while (resultSet.next()) {
+                    restaurantTableList.add(helperForCreatingRestaurantTableObj(resultSet));
+                }
+                return restaurantTableList;
             }
         }
-        return restaurantTableList;
+    }
+
+    public RestaurantTable findTableByTableId(int tableId) throws SQLException {
+        String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ? AND occupied = false";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return helperForCreatingRestaurantTableObj(resultSet);
+                }
+            }
+        }
+        return null;
+    }
+
+    public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
+        RestaurantTable restaurantTable = new RestaurantTable(
+                resultSet.getInt(1),
+                resultSet.getInt(2),
+                resultSet.getBoolean(3),
+                resultSet.getInt(4),
+                resultSet.getInt(5),
+                resultSet.getInt(6),
+                resultSet.getString(7)
+        );
+        return restaurantTable;
     }
 
 

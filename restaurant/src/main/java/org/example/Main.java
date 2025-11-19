@@ -27,14 +27,12 @@ public class Main {
         WaitressRepository waitressRepository = new WaitressRepository(pool);
         OrderRepository orderRepository = new OrderRepository(pool);
 
-        Mapper mapper = new Mapper();
         JsonResponseConverter jsonResponseConverter = new JsonResponseConverter();
 
         TableService tableService = new TableService(
                 tablesRepository,
                 waitressRepository,
-                orderRepository,
-                mapper
+                orderRepository
         );
 
         ItemController itemController = new ItemController(itemsRepository);
