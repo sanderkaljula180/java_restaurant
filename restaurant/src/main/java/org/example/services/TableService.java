@@ -5,6 +5,7 @@ import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
 import org.example.dto.TableDTO;
 import org.example.dto.TableSetupDTO;
+import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
 import org.example.helpers.Mapper;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -31,19 +33,15 @@ public class TableService {
 
     public List<TableDTO> getAllTables() throws SQLException {
         List<RestaurantTable> restaurantTableList = tablesRepository.getAllTables();
-        List<TableDTO> tableDTOList = restaurantTableList.stream()
-                .map(table -> {
-                    try {
-                        return Mapper.toTableDto(
-                                table,
-                                waitressRepository.findWaitressById(table.getWaitress_id()),
-                                orderRepository.findOrderByRestaurantTableId(table.getId())
-                        );
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).collect(toList());
-        return tableDTOList;
+        List<TableDTO> tableDTOS = new ArrayList<>();
+        for (RestaurantTable table : restaurantTableList) {
+            tableDTOS.add(Mapper.toTableDto(
+                    table,
+                    waitressRepository.findWaitressById(table.getWaitress_id()),
+                    orderRepository.findOrdersByRestaurantTableId(table.getId())
+            ));
+        }
+        return tableDTOS;
     }
 
     // Just in case I have to validate also if that table is occupied or not.
@@ -53,14 +51,12 @@ public class TableService {
     public TableSetupDTO getTableForSetup(int tableId) throws SQLException {
         RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
         if (restaurantTable == null) {
-            log.error("This table is not available. Try again.");
-            throw new RuntimeException("This table is not available. Try again.");
+            System.out.println("This table is not available. Try again.");
         }
 
         List<Waitress> waitresses = waitressRepository.findAllAvailableWaitresses();
         if (waitresses.isEmpty()) {
-            log.error("No available waitresses currently.");
-            throw new RuntimeException("No available waitresses currently.");
+            System.out.println("No available waitresses currently.");
         }
 
         return Mapper.toTableSetupDto(

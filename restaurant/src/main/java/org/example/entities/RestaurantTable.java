@@ -78,5 +78,16 @@ public class RestaurantTable {
         this.status = status;
     }
 
-
+    @Override
+    public String toString() {
+        return "RestaurantTable{" +
+                "id=" + id +
+                ", table_number=" + table_number +
+                ", occupied=" + occupied +
+                ", number_of_guests=" + number_of_guests +
+                ", table_capacity=" + table_capacity +
+                ", waitress_id=" + waitress_id +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

@@ -36,6 +36,7 @@ public class TablesRepository {
         String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ? AND occupied = false";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, tableId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return helperForCreatingRestaurantTableObj(resultSet);
@@ -46,7 +47,7 @@ public class TablesRepository {
     }
 
     public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
-        RestaurantTable restaurantTable = new RestaurantTable(
+        return new RestaurantTable(
                 resultSet.getInt(1),
                 resultSet.getInt(2),
                 resultSet.getBoolean(3),
@@ -55,7 +56,6 @@ public class TablesRepository {
                 resultSet.getInt(6),
                 resultSet.getString(7)
         );
-        return restaurantTable;
     }
 
 

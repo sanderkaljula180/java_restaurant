@@ -10,14 +10,12 @@ public class JsonResponseConverter {
     public <T> byte[] convertArrayIntoJsonByte(List<T> listToConvert) {
         JSONArray jsonArray = new JSONArray(listToConvert);
         String jsonString = jsonArray.toString();
-        byte[] jsonBytes = jsonString.getBytes();
-        return jsonBytes;
+        return jsonString.getBytes();
     }
 
     public <T> byte[] convertDTOIntoJsonByte(T dtoToConvert) {
         JSONObject jsonObject = new JSONObject(dtoToConvert);
         String jsonString = jsonObject.toString();
-        byte[] jsonBytes = jsonString.getBytes();
-        return jsonBytes;
+        return jsonString.getBytes();
     }
 }

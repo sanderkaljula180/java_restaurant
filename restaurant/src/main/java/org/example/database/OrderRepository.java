@@ -20,7 +20,7 @@ public class OrderRepository {
         this.cp = cp;
     }
     
-    public List<Order> findOrderByRestaurantTableId(int tableId) throws SQLException {
+    public List<Order> findOrdersByRestaurantTableId(int tableId) throws SQLException {
         List<Order> ordersByTableId = new ArrayList<>();
         String sqlStatement = "SELECT * FROM orders WHERE table_id = ? AND paid = FALSE";
         try (Connection connection = cp.createConnection()) {

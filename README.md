@@ -111,6 +111,8 @@ API's:
   - Sets is_paid true
   - Sets table status to 'FREE'
 
+- POST for adding new table maybe
+- POST add new waitress
 
 
 

@@ -43,13 +43,12 @@ public class TablesController {
                 headers.add("Connection", "keep-alive");
                 httpExchange.sendResponseHeaders(200, 0);
                 OutputStream response = httpExchange.getResponseBody();
-                response.write(jsonConverter
-                        .convertArrayIntoJsonByte(
+                response.write(jsonConverter.convertArrayIntoJsonByte(
                            tableService.getAllTables()
                         ));
                 response.close();
-            } catch (SQLException | IOException e) {
-                log.error(String.valueOf(e));
+            } catch (Exception e) {
+                System.out.println(e);
                 throw new RuntimeException(e);
             }
         }
@@ -61,7 +60,6 @@ public class TablesController {
         if (httpExchange.getRequestMethod().equals("GET")) {
             try {
                 int tableId = checkForTableId(httpExchange.getRequestURI().getPath());
-                System.out.println(tableId);
                 LocalDateTime time =  LocalDateTime.now();
                 Headers headers = httpExchange.getResponseHeaders();
                 headers.add("Date", String.valueOf(time));
@@ -74,8 +72,8 @@ public class TablesController {
                                 tableService.getTableForSetup(tableId)
                         ));
                 response.close();
-            } catch (SQLException | NumberFormatException | IOException e) {
-                log.error(String.valueOf(e));
+            } catch (Exception e) {
+                System.out.println(e);
                 throw new RuntimeException(e);
             }
 

@@ -16,6 +16,12 @@ public class Mapper {
         HashMap<Integer, Boolean> order_statuses = new HashMap<>();
         orders.forEach(order -> order_statuses.put(order.getId(), order.isReady()));
 
+        String waitressName = "None";
+        if (waitress != null) {
+            waitressName = waitress.getName();
+        }
+
+        System.out.println(waitressName);
         return new TableDTO(
                 restaurantTable.getId(),
                 restaurantTable.isOccupied(),
@@ -23,7 +29,7 @@ public class Mapper {
                 restaurantTable.getTable_capacity(),
                 restaurantTable.getNumber_of_guests(),
                 restaurantTable.getStatus(),
-                waitress.getName(),
+                waitressName,
                 order_statuses
                 );
     }

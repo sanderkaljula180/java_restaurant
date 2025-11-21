@@ -47,12 +47,11 @@ public class WaitressRepository {
     }
 
     public Waitress helperFroCreatingWaitressObj(ResultSet resultSet) throws SQLException {
-        Waitress waitress = new Waitress(
-                resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getBoolean("is_available")
+        return new Waitress(
+                resultSet.getInt(1),
+                resultSet.getString(2),
+                resultSet.getBoolean(3)
         );
-        return waitress;
     }
 
 }
