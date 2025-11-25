@@ -2,6 +2,7 @@ package org.example.api;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import org.example.configuration.GlobalExceptionHandler;
 import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
@@ -47,8 +48,7 @@ public class TablesController {
                            tableService.getAllTables()
                         ));
                 response.close();
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (SQLException  | IOException | NullPointerException e) {
                 throw new RuntimeException(e);
             }
         }
