@@ -30,7 +30,6 @@ public class ItemController {
                 httpExchange.sendResponseHeaders(200, 0);
                 OutputStream response = httpExchange.getResponseBody();
                 List<Item> allItems = itemsRepository.getAllItems();
-                System.out.println(allItems);
                 String items = allItems.toString();
                 byte[] bytes = items.getBytes();
                 response.write(bytes);

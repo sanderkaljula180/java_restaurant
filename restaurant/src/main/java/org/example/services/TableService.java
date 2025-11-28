@@ -41,7 +41,7 @@ public class TableService {
                     orderRepository.findOrdersByRestaurantTableId(table.getId())
             ));
         }
-        return tableDTOS;
+        return null;
     }
 
     // Just in case I have to validate also if that table is occupied or not.
