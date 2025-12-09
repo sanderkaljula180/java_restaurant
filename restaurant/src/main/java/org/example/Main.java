@@ -12,6 +12,7 @@ import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
 import org.example.helpers.JsonResponseConverter;
+import org.example.response.ApiResponse;
 import org.example.response.ErrorResponse;
 import org.example.router.ApiRouter;
 import org.example.services.TableService;
@@ -44,11 +45,18 @@ public class Main {
                 orderRepository
         );
 
-        ItemController itemController = new ItemController(itemsRepository);
+        ApiResponse apiResponse = new ApiResponse();
+        ItemController itemController = new ItemController(
+                itemsRepository,
+                errorResponse,
+                apiResponse,
+                jsonResponseConverter
+        );
         TablesController tablesController = new TablesController(
                 tableService,
                 jsonResponseConverter,
-                errorResponse
+                errorResponse,
+                apiResponse
         );
 
         ApiRouter apiRouter = new ApiRouter(itemController, tablesController);

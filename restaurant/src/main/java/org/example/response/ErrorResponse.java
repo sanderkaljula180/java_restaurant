@@ -24,7 +24,6 @@ public class ErrorResponse {
 
     public void errorResponse(HttpExchange httpExchange, Exception e) throws IOException {
         ErrorResponseDTO errorResponseDTO = entityForErrorResponse(e, httpExchange);
-        System.out.println(errorResponseDTO.getStatus());
         LocalDateTime time =  LocalDateTime.now();
         Headers headers = httpExchange.getResponseHeaders();
         headers.add("Date", String.valueOf(time));
@@ -38,9 +37,16 @@ public class ErrorResponse {
 
 
 
+    /**
+     * Error codes that probably will be written here
+     * 400 - Bad Request
+     * 404 - Resource doesnt exist
+     * 500 - Internal
+     * 503 - Service unavailable, like Database
+     * **/
     public ErrorResponseDTO entityForErrorResponse(Exception e, HttpExchange httpExchange) {
 
-
+        // Siia tulevad if'id
 
         return new ErrorResponseDTO(
                 LocalDateTime.now(),
