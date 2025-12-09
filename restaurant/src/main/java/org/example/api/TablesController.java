@@ -36,8 +36,6 @@ public class TablesController {
         }
     }
 
-    // I have to check if there is a id behind that also, if not then return exception
-    // ALso I have to send back bad request if checkForTableId fails. Create bad request method.
     public void getTableForSetup(HttpExchange httpExchange) throws IOException {
         if (httpExchange.getRequestMethod().equals("GET")) {
             try {

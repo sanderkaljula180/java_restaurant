@@ -1,6 +1,7 @@
 package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
+import org.example.configuration.ResourcesNotFoundException;
 import org.example.entities.RestaurantTable;
 
 import java.sql.Connection;
@@ -40,11 +41,13 @@ public class TablesRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return helperForCreatingRestaurantTableObj(resultSet);
+                } else {
+                    throw new ResourcesNotFoundException("Table not found: " + tableId);
                 }
             }
         }
-        return null;
     }
+
 
     public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
         return new RestaurantTable(

@@ -45,8 +45,25 @@ public class ErrorResponse {
      * 503 - Service unavailable, like Database
      * **/
     public ErrorResponseDTO entityForErrorResponse(Exception e, HttpExchange httpExchange) {
+        if (e.toString().contains("NumberFormatException")) {
+            return new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    400,
+                    "Invalid input",
+                    e.getMessage(),
+                    httpExchange.getRequestURI().getPath()
+            );
+        }
 
-        // Siia tulevad if'id
+        if (e.toString().contains("ResourcesNotFoundException")) {
+            return new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    404,
+                    "The resource does not exist.",
+                    e.getMessage(),
+                    httpExchange.getRequestURI().getPath()
+            );
+        }
 
         return new ErrorResponseDTO(
                 LocalDateTime.now(),

@@ -7,7 +7,7 @@ public class StacktraceConfig {
 
     private static final Logger log = LogManager.getLogger(StacktraceConfig.class);
 
-    // It would be nice if it looked more like a spring error stacktrace?
+    // It would be nice if it looked more like a spring error stacktrace? It is kinda fucked right now
     public static void logStackTraceFromThread(Exception e) {
         StringBuilder message = new StringBuilder();
         for(StackTraceElement stackTraceElement : e.getStackTrace()) {
