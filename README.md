@@ -57,7 +57,7 @@ API's:
         - orders
             - order status
 
-- GET /api/tables/{id}/table_setup
+- GET /api/tables/table_setup/{id}
     - This api is for vacant table configuration view. We only need table number,seat capacity and available waitresses.
       - Table id
       - Table number
