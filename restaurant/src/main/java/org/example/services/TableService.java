@@ -3,6 +3,8 @@ package org.example.services;
 import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
+import org.example.dto.OccupyTableRequestDTO;
+import org.example.dto.OccupyTableResponseDTO;
 import org.example.dto.TableDTO;
 import org.example.dto.TableSetupDTO;
 import org.example.entities.Order;
@@ -64,4 +66,13 @@ public class TableService {
                 waitresses
         );
     }
+
+    public OccupyTableResponseDTO occupyTable(OccupyTableRequestDTO occupyTableRequestDTO) {
+        // I have to validate that table is not occupied.
+        // That table exists
+        // That number of quests actually fits into that table
+        // That waitress is actually available.
+        return null;
+    }
+
 }

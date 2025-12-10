@@ -64,7 +64,7 @@ API's:
       - Seat capacity
       - Available waitresses
 
-- POST /api/tables/{id}/occupy
+- POST /api/tables/occupy/
     - Send how many quests
     - Send who is the waitress
     - also change waitress is_available boolean if needed

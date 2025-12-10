@@ -1,6 +1,6 @@
 package org.example.helpers;
 
-import org.example.dto.ErrorResponseDTO;
+import org.example.dto.OccupyTableRequestDTO;
 import org.example.dto.TableDTO;
 import org.example.dto.TableSetupDTO;
 import org.example.entities.Order;
@@ -44,6 +44,15 @@ public class Mapper {
                 restaurantTable.getTable_number(),
                 restaurantTable.getTable_capacity(),
                 availableWaitresses
+        );
+    }
+
+    public static OccupyTableRequestDTO toOccupyTableRequestDto(int tableId, int numberOfQuests, int waitressId) {
+
+        return new OccupyTableRequestDTO(
+                tableId,
+                numberOfQuests,
+                waitressId
         );
     }
 

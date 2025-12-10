@@ -21,8 +21,8 @@ public class ApiResponse {
         response.close();
     }
 
-    public void createResponse(byte[] byteResponse, HttpExchange httpExchange) {
-        // WELL SEE WHAT COMES HERE
+    public void createdResponse(byte[] byteResponse, HttpExchange httpExchange) {
+        LocalDateTime time =  LocalDateTime.now();
     }
 
 }

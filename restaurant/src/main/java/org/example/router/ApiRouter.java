@@ -20,5 +20,6 @@ public class ApiRouter {
         httpServer.createContext("/api/items/", itemController::getAllItems);
         httpServer.createContext("/api/tables/", tablesController::getAllTables);
         httpServer.createContext("/api/tables/table_setup/", tablesController::getTableForSetup);
+        httpServer.createContext("/api/tables/occupy/", tablesController::occupyTable);
     }
 }
