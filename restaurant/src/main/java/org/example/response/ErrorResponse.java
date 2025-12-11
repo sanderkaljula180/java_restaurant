@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.dto.ErrorResponseDTO;
+import org.example.exceptions.ResourceNotAvailable;
 import org.example.helpers.JsonResponseConverter;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,26 @@ public class ErrorResponse {
      * 503 - Service unavailable, like Database
      * **/
     public ErrorResponseDTO entityForErrorResponse(Exception e, HttpExchange httpExchange) {
+        if (e.toString().contains("ConflictException")) {
+            return new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    409,
+                    "Internal Conflict",
+                    e.getMessage(),
+                    httpExchange.getRequestURI().getPath()
+            );
+        }
+
+        if (e.toString().contains("ResourceNotAvailable")) {
+            return new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    503,
+                    "Service Unavailable",
+                    e.getMessage(),
+                    httpExchange.getRequestURI().getPath()
+            );
+        }
+
         if (e.toString().contains("NumberFormatException")) {
             return new ErrorResponseDTO(
                     LocalDateTime.now(),

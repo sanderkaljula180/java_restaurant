@@ -1,8 +1,8 @@
 package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
-import org.example.configuration.ResourcesNotFoundException;
 import org.example.entities.RestaurantTable;
+import org.example.exceptions.ResourcesNotFoundException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,7 +34,7 @@ public class TablesRepository {
     }
 
     public RestaurantTable findTableByTableId(int tableId) throws SQLException {
-        String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ? AND occupied = false";
+        String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ?";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, tableId);
@@ -48,6 +48,35 @@ public class TablesRepository {
         }
     }
 
+    // I THINK THIS AINT RIGHT. SHOULD TRY SELECT AND THEN USE updateInt etc
+    // ResultSet failib selle pärast et statement.executeQuery() ei returni midagi. See tavaliselt return
+    // Ehk peaks äkki SELECT'i kasutama
+    // ja siis kasutama resultSet.next() ja resultSet.updateInt() jne
+    // Leidsin executeUpdate()
+    // Okei ma pean mõtlema mis teha siin. Ma tahan saada kaks asja (1) validationi et tehtud update ja (2) RestaurantTable objecti
+    public RestaurantTable updateTableRestaurantTables(RestaurantTable restaurantTable) throws SQLException {
+        String sqlStatement = "UPDATE restaurant_tables SET " +
+                "table_number = ?, " +
+                "occupied = ?, " +
+                "number_of_guests = ?, " +
+                "table_capacity = ?, " +
+                "waitress_id = ?, " +
+                "status = ? " +
+                "WHERE id = ?";
+
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, restaurantTable.getTable_number());
+            statement.setBoolean(2, restaurantTable.isOccupied());
+            statement.setInt(3, restaurantTable.getNumber_of_guests());
+            statement.setInt(4, restaurantTable.getTable_capacity());
+            statement.setInt(5, restaurantTable.getWaitress_id());
+            statement.setString(6, restaurantTable.getStatus());
+            statement.setInt(7, restaurantTable.getId());
+            int rowCount = statement.executeUpdate();
+        }
+        return null;
+    }
 
     public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
         return new RestaurantTable(

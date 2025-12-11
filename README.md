@@ -110,6 +110,7 @@ API's:
 - POST /api/tables/{id}/vacate
   - Sets is_paid true
   - Sets table status to 'FREE'
+  - Sets waitress_id in table also null
 
 - POST for adding new table maybe
 - POST add new waitress

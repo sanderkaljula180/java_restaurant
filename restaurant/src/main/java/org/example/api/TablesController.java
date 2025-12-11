@@ -1,10 +1,10 @@
 package org.example.api;
 
 import com.sun.net.httpserver.HttpExchange;
-import org.example.configuration.ResourcesNotFoundException;
 import org.example.configuration.StacktraceConfig;
 import org.example.dto.OccupyTableRequestDTO;
 import org.example.dto.OccupyTableResponseDTO;
+import org.example.exceptions.ResourcesNotFoundException;
 import org.example.helpers.JsonResponseConverter;
 import org.example.helpers.Mapper;
 import org.example.response.ApiResponse;

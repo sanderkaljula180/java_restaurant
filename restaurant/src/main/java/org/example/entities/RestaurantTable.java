@@ -26,10 +26,6 @@ public class RestaurantTable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getTable_number() {
         return table_number;
     }

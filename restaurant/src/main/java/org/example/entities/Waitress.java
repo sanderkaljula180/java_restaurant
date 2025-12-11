@@ -19,10 +19,6 @@ public class Waitress {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -37,5 +33,14 @@ public class Waitress {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Waitress{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", available=" + available +
+                '}';
     }
 }

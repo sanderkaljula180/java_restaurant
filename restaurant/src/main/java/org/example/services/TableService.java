@@ -10,10 +10,13 @@ import org.example.dto.TableSetupDTO;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
+import org.example.exceptions.ConflictException;
+import org.example.exceptions.ResourceNotAvailable;
 import org.example.helpers.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +70,35 @@ public class TableService {
         );
     }
 
-    public OccupyTableResponseDTO occupyTable(OccupyTableRequestDTO occupyTableRequestDTO) {
-        // I have to validate that table is not occupied.
-        // That table exists
-        // That number of quests actually fits into that table
-        // That waitress is actually available.
+    public OccupyTableResponseDTO occupyTable(OccupyTableRequestDTO occupyTableRequestDTO) throws SQLException {
+        RestaurantTable restaurantTable = tablesRepository.findTableByTableId(occupyTableRequestDTO.getTableId());
+        if (restaurantTable.isOccupied()) {
+            throw new ResourceNotAvailable("Table " + restaurantTable.getId() + " is not available");
+        }
+
+        if (restaurantTable.getTable_capacity() < occupyTableRequestDTO.getNumberOfQuests()) {
+            throw new ResourceNotAvailable("This table doesn’t hold that many quests. It only holds " + restaurantTable.getTable_capacity());
+        }
+
+        if (!restaurantTable.getStatus().equals("FREE")) {
+            throw new ConflictException("Table status field must be FREE, but the database contains " + restaurantTable.getStatus());
+        }
+
+        Waitress waitress = waitressRepository.findWaitressById(occupyTableRequestDTO.getWaitressId());
+        if (!waitress.isAvailable()) {
+            throw new ResourceNotAvailable("Waitress " + waitress.getName() + " is not available");
+        }
+
+        restaurantTable.setOccupied(true);
+        restaurantTable.setNumber_of_guests(occupyTableRequestDTO.getNumberOfQuests());
+        restaurantTable.setWaitress_id(waitress.getId());
+        restaurantTable.setStatus("CHOOSING_ITEMS");
+        waitress.setAvailable(false);
+
+        restaurantTable = tablesRepository.updateTableRestaurantTables(restaurantTable);
+
+        System.out.println(restaurantTable);
+
         return null;
     }
 
