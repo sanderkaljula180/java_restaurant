@@ -69,6 +69,7 @@ API's:
     - Send who is the waitress
     - also change waitress is_available boolean if needed
     - Change table status to 'CHOOSING_ITEMS'
+    - Send back json response for validation
 
 - GET /api/orders
   - This will send a list with all orders and its order_items. This is for kitchen
@@ -118,7 +119,7 @@ API's:
 
 
 Table statuses:
- - FREE
+ - AVAILABLE
  - CHOOSING_ITEMS
  - READY_FOR_ORDER
  - WAITING_FOR_ORDER

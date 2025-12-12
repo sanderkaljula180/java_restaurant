@@ -64,16 +64,8 @@ public class TablesController {
                         jsonObject.getInt("numberOfQuests"),
                         jsonObject.getInt("waitressId")
                 );
-                OccupyTableResponseDTO occupyTableResponseDTO = tableService.occupyTable(occupyTableRequestDTO);
-//                LocalDateTime time =  LocalDateTime.now();
-//                Headers headers = httpExchange.getResponseHeaders();
-//                headers.add("Date", String.valueOf(time));
-//                headers.add("Content-Type", "application/json");
-//                headers.add("Connection", "keep-alive");
-//                httpExchange.sendResponseHeaders(200, 0);
-//                OutputStream response = httpExchange.getResponseBody();
-//                response.write();
-//                response.close();
+                byte[] byteResponse = jsonConverter.convertDTOIntoJsonByte(tableService.occupyTable(occupyTableRequestDTO));
+                apiResponse.okResponse(byteResponse, httpExchange);
             } catch (Exception e) {
                 StacktraceConfig.logStackTraceFromThread(e);
                 errorResponse.errorResponse(httpExchange, e);

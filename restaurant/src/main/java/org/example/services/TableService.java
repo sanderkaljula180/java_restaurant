@@ -20,6 +20,7 @@ import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -80,8 +81,8 @@ public class TableService {
             throw new ResourceNotAvailable("This table doesn’t hold that many quests. It only holds " + restaurantTable.getTable_capacity());
         }
 
-        if (!restaurantTable.getStatus().equals("FREE")) {
-            throw new ConflictException("Table status field must be FREE, but the database contains " + restaurantTable.getStatus());
+        if (!restaurantTable.getStatus().equals("AVAILABLE")) {
+            throw new ConflictException("Table status field must be AVAILABLE, but the database contains " + restaurantTable.getStatus());
         }
 
         Waitress waitress = waitressRepository.findWaitressById(occupyTableRequestDTO.getWaitressId());
@@ -95,11 +96,10 @@ public class TableService {
         restaurantTable.setStatus("CHOOSING_ITEMS");
         waitress.setAvailable(false);
 
-        restaurantTable = tablesRepository.updateTableRestaurantTables(restaurantTable);
-
-        System.out.println(restaurantTable);
-
-        return null;
+        return Mapper.toOccupyTableResponseDTO(
+                tablesRepository.updateTableRestaurantTables(restaurantTable),
+                waitressRepository.updateTableWaitresses(waitress)
+        );
     }
 
 }

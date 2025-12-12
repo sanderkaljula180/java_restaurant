@@ -1,6 +1,7 @@
 package org.example.helpers;
 
 import org.example.dto.OccupyTableRequestDTO;
+import org.example.dto.OccupyTableResponseDTO;
 import org.example.dto.TableDTO;
 import org.example.dto.TableSetupDTO;
 import org.example.entities.Order;
@@ -13,7 +14,6 @@ import java.util.List;
 public class Mapper {
 
     public static TableDTO toTableDto(RestaurantTable restaurantTable, Waitress waitress, List<Order> orders) {
-
         HashMap<Integer, Boolean> order_statuses = new HashMap<>();
         orders.forEach(order -> order_statuses.put(order.getId(), order.isReady()));
 
@@ -35,7 +35,6 @@ public class Mapper {
     }
 
     public static TableSetupDTO toTableSetupDto(RestaurantTable restaurantTable, List<Waitress> waitresses) {
-
         HashMap<Integer, String> availableWaitresses = new HashMap<>();
         waitresses.forEach(waitress -> availableWaitresses.put(waitress.getId(), waitress.getName()));
 
@@ -48,11 +47,20 @@ public class Mapper {
     }
 
     public static OccupyTableRequestDTO toOccupyTableRequestDto(int tableId, int numberOfQuests, int waitressId) {
-
         return new OccupyTableRequestDTO(
                 tableId,
                 numberOfQuests,
                 waitressId
+        );
+    }
+
+    public static OccupyTableResponseDTO toOccupyTableResponseDTO(RestaurantTable restaurantTable, Waitress waitress) {
+        return new OccupyTableResponseDTO(
+                restaurantTable.getId(),
+                restaurantTable.getNumber_of_guests(),
+                restaurantTable.getWaitress_id(),
+                "Table status updated from AVAILABLE to " + restaurantTable.getStatus(),
+                "Table " + restaurantTable.getTable_number() + " is now occupied. The table is being waited by " + waitress.getName()
         );
     }
 
