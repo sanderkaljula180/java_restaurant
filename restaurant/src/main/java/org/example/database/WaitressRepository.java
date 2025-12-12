@@ -2,6 +2,7 @@ package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.Waitress;
+import org.example.exceptions.DatabaseUpdateException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,6 +47,25 @@ public class WaitressRepository {
         }
     }
 
+    public Waitress updateTableWaitresses(Waitress waitress) throws SQLException {
+        String sqlStatement = "UPDATE waitresses SET " +
+                "name = ?, " +
+                "is_available = ? " +
+                "WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setString(1, waitress.getName());
+            statement.setBoolean(2, waitress.isAvailable());
+            statement.setInt(3, waitress.getId());
+            int rowCount = statement.executeUpdate();
+            if (rowCount == 1) {
+                return findWaitressById(waitress.getId());
+            } else {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+            }
+        }
+    }
+
     public Waitress helperFroCreatingWaitressObj(ResultSet resultSet) throws SQLException {
         return new Waitress(
                 resultSet.getInt(1),
@@ -53,5 +73,4 @@ public class WaitressRepository {
                 resultSet.getBoolean(3)
         );
     }
-
 }

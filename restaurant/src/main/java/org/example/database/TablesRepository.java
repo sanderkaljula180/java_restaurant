@@ -2,6 +2,7 @@ package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.RestaurantTable;
+import org.example.exceptions.DatabaseUpdateException;
 import org.example.exceptions.ResourcesNotFoundException;
 
 import java.sql.Connection;
@@ -48,12 +49,6 @@ public class TablesRepository {
         }
     }
 
-    // I THINK THIS AINT RIGHT. SHOULD TRY SELECT AND THEN USE updateInt etc
-    // ResultSet failib selle pärast et statement.executeQuery() ei returni midagi. See tavaliselt return
-    // Ehk peaks äkki SELECT'i kasutama
-    // ja siis kasutama resultSet.next() ja resultSet.updateInt() jne
-    // Leidsin executeUpdate()
-    // Okei ma pean mõtlema mis teha siin. Ma tahan saada kaks asja (1) validationi et tehtud update ja (2) RestaurantTable objecti
     public RestaurantTable updateTableRestaurantTables(RestaurantTable restaurantTable) throws SQLException {
         String sqlStatement = "UPDATE restaurant_tables SET " +
                 "table_number = ?, " +
@@ -63,7 +58,6 @@ public class TablesRepository {
                 "waitress_id = ?, " +
                 "status = ? " +
                 "WHERE id = ?";
-
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, restaurantTable.getTable_number());
@@ -74,8 +68,12 @@ public class TablesRepository {
             statement.setString(6, restaurantTable.getStatus());
             statement.setInt(7, restaurantTable.getId());
             int rowCount = statement.executeUpdate();
+            if (rowCount == 1) {
+                return findTableByTableId(restaurantTable.getId());
+            } else {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+            }
         }
-        return null;
     }
 
     public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
