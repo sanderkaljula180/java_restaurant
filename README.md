@@ -64,7 +64,7 @@ API's:
       - Seat capacity
       - Available waitresses
 
-- POST /api/tables/occupy/
+- PUT /api/tables/occupy/
     - Send how many quests
     - Send who is the waitress
     - also change waitress is_available boolean if needed
@@ -81,15 +81,15 @@ API's:
       - order items quantity
       - is_complete
 
-- POST /api/order-items/{id}/is_completed
+- PUT /api/order-items/{id}/is_completed
   - changes order item is_completed to true
   - Also check if all other order-items are done in parent Order. If they are then change Order is_ready to true
 
-- POST /api/order-items/{id}/not_completed
+- PUT /api/order-items/{id}/not_completed
     - changes order item is_completed to false
     - Also check if all other order-items are done in parent Order. If they are then change Order is_ready to false
 
-- POST /api/tables/{id}/ready_for_order
+- PUT /api/tables/change_status/ready_for_order
     - changes status to 'READY_FOR_ORDER'
 
 - GET /api/items
@@ -102,16 +102,19 @@ API's:
   - Create order and order_items in database
   - Change table status to 'WAITING_FOR_ORDER'
 
-- POST /api/tables/{id}/order_completed
+- PUT /api/tables/change_status/order_completed
   - changes status to 'ORDER_COMPLETED'
 
-- POST /api/tables/{id}/ready_to_pay
+- PUT /api/tables/change_status/ready_to_pay
   - Changes table status to 'READY_TO_PAY'
 
-- POST /api/tables/{id}/vacate
+
+
+- PUT /api/tables/{id}/vacate
   - Sets is_paid true
-  - Sets table status to 'FREE'
+  - Sets table status to 'AVAILABLE'
   - Sets waitress_id in table also null
+  - is_occupied also false
 
 - POST for adding new table maybe
 - POST add new waitress

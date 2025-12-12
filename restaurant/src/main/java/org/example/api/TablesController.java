@@ -56,7 +56,7 @@ public class TablesController {
     }
 
     public void occupyTable(HttpExchange httpExchange) throws IOException {
-        if (httpExchange.getRequestMethod().equals("POST")) {
+        if (httpExchange.getRequestMethod().equals("PUT")) {
             try {
                 JSONObject jsonObject = jsonConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
                 OccupyTableRequestDTO occupyTableRequestDTO = Mapper.toOccupyTableRequestDto(
@@ -70,6 +70,12 @@ public class TablesController {
                 StacktraceConfig.logStackTraceFromThread(e);
                 errorResponse.errorResponse(httpExchange, e);
             }
+        }
+    }
+
+    public void tableStatusChange(HttpExchange httpExchange) {
+        if (httpExchange.getRequestMethod().equals("PUT")) {
+
         }
     }
 
