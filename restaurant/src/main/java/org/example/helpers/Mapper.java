@@ -70,4 +70,11 @@ public class Mapper {
         );
     }
 
+    public static AddOrderRequestDTO toAddOrderRequestDTO(int tableId, List<OrderItemsForOrderRequestDTO> items) {
+        return new AddOrderRequestDTO(
+                tableId,
+                items
+        );
+    }
+
 }

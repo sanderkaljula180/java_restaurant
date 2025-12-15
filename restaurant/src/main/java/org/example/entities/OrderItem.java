@@ -6,16 +6,18 @@ public class OrderItem {
     private int item_id;
     private int quantity;
     private float price;
+    private boolean ready;
 
     public OrderItem() {
     }
 
-    public OrderItem(int id, int order_id, int item_id, int quantity, float price) {
+    public OrderItem(int id, int order_id, int item_id, int quantity, float price, boolean ready) {
         this.id = id;
         this.order_id = order_id;
         this.item_id = item_id;
         this.quantity = quantity;
         this.price = price;
+        this.ready = ready;
     }
 
     public int getId() {
@@ -56,5 +58,13 @@ public class OrderItem {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }

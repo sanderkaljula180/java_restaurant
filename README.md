@@ -97,8 +97,23 @@ API's:
     - items in stock
     - item price
 
-- POST /api/tables/{id}/add_order
+- POST /api/order/add_order
   - Send order items
+  - Request will be json array objects. 
+    - 
+      {
+      "tableId": 3,
+      "items": [
+      {
+      "itemId": 3,
+      "quantity": 2
+      },
+      {
+      "itemId": 2,
+      "quantity": 3
+      }
+      ]
+      }
   - Create order and order_items in database
   - Change table status to 'WAITING_FOR_ORDER'
 

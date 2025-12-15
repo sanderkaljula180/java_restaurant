@@ -24,6 +24,15 @@ public class Order {
         this.ready = ready;
     }
 
+    public Order(int table_id, boolean paid, LocalDateTime order_time, float order_price, int waitressId, boolean ready) {
+        this.table_id = table_id;
+        this.paid = paid;
+        this.order_time = order_time;
+        this.order_price = order_price;
+        this.waitress_id = waitressId;
+        this.ready = ready;
+    }
+
     public int getId() {
         return id;
     }

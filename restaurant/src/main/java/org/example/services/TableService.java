@@ -16,6 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// I SHOULD NOT USE WAITRESS REPOSITORY STRAIGHT FROM HERE. I SHOULD USE WAITRESS SERVICE INSTEAD AND THIS GOES FOR EVERYTHING.
+// REFACTOR THAT SHIT LATER
 public class TableService {
 
     private static final Logger log = LoggerFactory.getLogger(TableService.class);
@@ -42,10 +44,10 @@ public class TableService {
         return tableDTOS;
     }
 
-    // Just in case I have to validate also if that table is occupied or not.
-    // Also custom Exception for if table is not actually available.Also waitress
-    // Then I will call that custom exception and catch it in controller layer and
-    // call a new method that sends back correct OutputStream response
+    public RestaurantTable getTableById(int tableId) throws SQLException {
+        return tablesRepository.findTableByTableId(tableId);
+    }
+
     public TableSetupDTO getTableForSetup(int tableId) throws SQLException {
         RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
         if (restaurantTable == null) {

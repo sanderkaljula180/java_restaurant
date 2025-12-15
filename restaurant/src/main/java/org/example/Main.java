@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.api.ItemController;
+import org.example.api.OrderController;
 import org.example.api.TablesController;
 import org.example.configuration.DBConnectionPool;
 import org.example.configuration.HttpServerConfiguration;
@@ -15,6 +16,7 @@ import org.example.helpers.JsonResponseConverter;
 import org.example.response.ApiResponse;
 import org.example.response.ErrorResponse;
 import org.example.router.ApiRouter;
+import org.example.services.OrderService;
 import org.example.services.TableService;
 
 
@@ -44,6 +46,9 @@ public class Main {
                 waitressRepository,
                 orderRepository
         );
+        OrderService orderService = new OrderService(
+            tableService
+        );
 
         ApiResponse apiResponse = new ApiResponse();
         ItemController itemController = new ItemController(
@@ -58,8 +63,14 @@ public class Main {
                 errorResponse,
                 apiResponse
         );
+        OrderController orderController = new OrderController(
+              orderService,
+              jsonResponseConverter,
+              errorResponse,
+              apiResponse
+        );
 
-        ApiRouter apiRouter = new ApiRouter(itemController, tablesController);
+        ApiRouter apiRouter = new ApiRouter(itemController, tablesController, orderController);
         HttpServerConfiguration config = new HttpServerConfiguration(apiRouter);
         HttpServer httpServer = config.httpServer();
         httpServer.start();
