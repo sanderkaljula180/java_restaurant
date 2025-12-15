@@ -3,11 +3,7 @@ package org.example.services;
 import org.example.database.OrderRepository;
 import org.example.database.TablesRepository;
 import org.example.database.WaitressRepository;
-import org.example.dto.OccupyTableRequestDTO;
-import org.example.dto.OccupyTableResponseDTO;
-import org.example.dto.TableDTO;
-import org.example.dto.TableSetupDTO;
-import org.example.entities.Order;
+import org.example.dto.*;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
 import org.example.exceptions.ConflictException;
@@ -16,13 +12,9 @@ import org.example.helpers.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
 
 public class TableService {
 
@@ -97,9 +89,31 @@ public class TableService {
         waitress.setAvailable(false);
 
         return Mapper.toOccupyTableResponseDTO(
-                tablesRepository.updateTableRestaurantTables(restaurantTable),
+                tablesRepository.updateRestaurantTableById(restaurantTable),
                 waitressRepository.updateTableWaitresses(waitress)
         );
+    }
+
+    public TableStatusUpdateResponseDTO updateTableStatusIntoReadyForOrder(int tableId) throws SQLException {
+        RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
+        if (restaurantTable.getStatus().equals("READY_FOR_ORDER")) {
+            throw new ConflictException("Table has already status READY_FOR_ORDER");
+        }
+
+        if (restaurantTable.getStatus().equals("AVAILABLE")) {
+            String exceptionMessage = restaurantTable.isOccupied()
+                    ? "Table is AVAILABLE but table is also occupied. This can't happen."
+                    : "Table is AVAILABLE, so occupy table first.";
+            throw new ConflictException(exceptionMessage);
+        }
+
+        String oldStatus = restaurantTable.getStatus();
+        restaurantTable.setStatus("READY_FOR_ORDER");
+        return Mapper.toTableStatusUpdateResponseDTO(
+                tablesRepository.updateRestaurantTableStatusById(restaurantTable),
+                oldStatus
+        );
+
     }
 
 }

@@ -2,16 +2,18 @@ package org.example.entities;
 
 public class Item {
     private int id;
-    private String item_name;
-    private float item_price;
+    private String itemName;
+    private float itemPrice;
+    private int itemsInStock;
 
     public Item() {
     }
 
-    public Item(int id, String item_name, float item_price) {
+    public Item(int id, String itemName, float itemPrice, int itemsInStock) {
         this.id = id;
-        this.item_name = item_name;
-        this.item_price = item_price;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.itemsInStock = itemsInStock;
     }
 
     public int getId() {
@@ -23,27 +25,36 @@ public class Item {
     }
 
     public String getItem_name() {
-        return item_name;
+        return itemName;
     }
 
     public void setItem_name(String item_name) {
-        this.item_name = item_name;
+        this.itemName = item_name;
     }
 
     public float getItem_price() {
-        return item_price;
+        return itemPrice;
     }
 
     public void setItem_price(float item_price) {
-        this.item_price = item_price;
+        this.itemPrice = item_price;
+    }
+
+    public int getItemsInStock() {
+        return itemsInStock;
+    }
+
+    public void setItemsInStock(int itemsInStock) {
+        this.itemsInStock = itemsInStock;
     }
 
     @Override
     public String toString() {
         return "Item{" +
                 "id=" + id +
-                ", item_name='" + item_name + '\'' +
-                ", item_price=" + item_price +
+                ", itemName='" + itemName + '\'' +
+                ", itemPrice=" + itemPrice +
+                ", itemsInStock=" + itemsInStock +
                 '}';
     }
 }

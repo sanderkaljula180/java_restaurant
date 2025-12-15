@@ -22,10 +22,12 @@ public class ItemsRepository {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                String item_name = resultSet.getString(2);
-                float item_price = resultSet.getInt(3);
-                Item item = new Item(id, item_name, item_price);
+                Item item = new Item(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getInt(3),
+                        resultSet.getInt(4)
+                );
                 allItemsArrayList.add(item);
             }
         }

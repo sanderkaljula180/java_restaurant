@@ -1,9 +1,6 @@
 package org.example.helpers;
 
-import org.example.dto.OccupyTableRequestDTO;
-import org.example.dto.OccupyTableResponseDTO;
-import org.example.dto.TableDTO;
-import org.example.dto.TableSetupDTO;
+import org.example.dto.*;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
@@ -61,6 +58,15 @@ public class Mapper {
                 restaurantTable.getWaitress_id(),
                 "Table status updated from AVAILABLE to " + restaurantTable.getStatus(),
                 "Table " + restaurantTable.getTable_number() + " is now occupied. The table is being waited by " + waitress.getName()
+        );
+    }
+
+    public static TableStatusUpdateResponseDTO toTableStatusUpdateResponseDTO(RestaurantTable restaurantTable, String previousStatus) {
+        return new TableStatusUpdateResponseDTO(
+          restaurantTable.getId(),
+          previousStatus,
+          restaurantTable.getStatus(),
+          "Table status was updated."
         );
     }
 

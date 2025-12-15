@@ -126,6 +126,6 @@ Table statuses:
  - CHOOSING_ITEMS
  - READY_FOR_ORDER
  - WAITING_FOR_ORDER
- - ORDER_COMPLETED
+ - ORDER_COMPLETED - If order is on the table
  - READY_TO_PAY
 

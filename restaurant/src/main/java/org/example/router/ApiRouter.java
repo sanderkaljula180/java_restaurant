@@ -21,6 +21,6 @@ public class ApiRouter {
         httpServer.createContext("/api/tables/", tablesController::getAllTables);
         httpServer.createContext("/api/tables/table_setup/", tablesController::getTableForSetup);
         httpServer.createContext("/api/tables/occupy/", tablesController::occupyTable);
-        httpServer.createContext("/api/tables/change_status/", tablesController::tableStatusChange);
+        httpServer.createContext("/api/tables/change_status/ready_for_order", tablesController::changeTableStatusIntoReadyForOrder);
     }
 }

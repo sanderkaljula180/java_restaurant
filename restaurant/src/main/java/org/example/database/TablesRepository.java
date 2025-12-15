@@ -5,10 +5,7 @@ import org.example.entities.RestaurantTable;
 import org.example.exceptions.DatabaseUpdateException;
 import org.example.exceptions.ResourcesNotFoundException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +46,7 @@ public class TablesRepository {
         }
     }
 
-    public RestaurantTable updateTableRestaurantTables(RestaurantTable restaurantTable) throws SQLException {
+    public RestaurantTable updateRestaurantTableById(RestaurantTable restaurantTable) throws SQLException {
         String sqlStatement = "UPDATE restaurant_tables SET " +
                 "table_number = ?, " +
                 "occupied = ?, " +
@@ -67,16 +64,31 @@ public class TablesRepository {
             statement.setInt(5, restaurantTable.getWaitress_id());
             statement.setString(6, restaurantTable.getStatus());
             statement.setInt(7, restaurantTable.getId());
-            int rowCount = statement.executeUpdate();
-            if (rowCount == 1) {
-                return findTableByTableId(restaurantTable.getId());
-            } else {
-                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
-            }
+            return executeUpdateOnOneItemAndReturnObject(restaurantTable, statement);
         }
     }
 
-    public RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
+    public RestaurantTable updateRestaurantTableStatusById(RestaurantTable restaurantTable) throws SQLException {
+        String sqlStatement = "UPDATE restaurant_tables SET " +
+                "status = ? " +
+                "WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setString(1, restaurantTable.getStatus());
+            statement.setInt(2, restaurantTable.getId());
+            return executeUpdateOnOneItemAndReturnObject(restaurantTable, statement);
+        }
+    }
+
+    private RestaurantTable executeUpdateOnOneItemAndReturnObject(RestaurantTable restaurantTable, PreparedStatement statement) throws SQLException {
+        int rowCount = statement.executeUpdate();
+        if (rowCount == 1) {
+            return findTableByTableId(restaurantTable.getId());
+        }
+        throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+    }
+
+    private RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
         return new RestaurantTable(
                 resultSet.getInt(1),
                 resultSet.getInt(2),

@@ -3,7 +3,6 @@ package org.example.api;
 import com.sun.net.httpserver.HttpExchange;
 import org.example.configuration.StacktraceConfig;
 import org.example.dto.OccupyTableRequestDTO;
-import org.example.dto.OccupyTableResponseDTO;
 import org.example.exceptions.ResourcesNotFoundException;
 import org.example.helpers.JsonResponseConverter;
 import org.example.helpers.Mapper;
@@ -73,8 +72,18 @@ public class TablesController {
         }
     }
 
-    public void tableStatusChange(HttpExchange httpExchange) {
+    public void changeTableStatusIntoReadyForOrder(HttpExchange httpExchange) throws IOException {
         if (httpExchange.getRequestMethod().equals("PUT")) {
+            try {
+                JSONObject jsonObject = jsonConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
+                byte[] byteResponse = jsonConverter.convertDTOIntoJsonByte(
+                        tableService.updateTableStatusIntoReadyForOrder(jsonObject.getInt("tableId"))
+                );
+                apiResponse.okResponse(byteResponse, httpExchange);
+            } catch (Exception e) {
+                StacktraceConfig.logStackTraceFromThread(e);
+                errorResponse.errorResponse(httpExchange, e);
+            }
 
         }
     }
