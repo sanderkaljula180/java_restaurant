@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Order {
@@ -7,14 +8,14 @@ public class Order {
     private int table_id;
     private boolean paid;
     private LocalDateTime order_time;
-    private float order_price;
+    private BigDecimal order_price;
     private int waitress_id;
     private boolean ready;
 
     public Order() {
     }
 
-    public Order(int id, int table_id, boolean paid, LocalDateTime order_time, float order_price, int waitressId, boolean ready) {
+    public Order(int id, int table_id, boolean paid, LocalDateTime order_time, BigDecimal order_price, int waitressId, boolean ready) {
         this.id = id;
         this.table_id = table_id;
         this.paid = paid;
@@ -24,7 +25,7 @@ public class Order {
         this.ready = ready;
     }
 
-    public Order(int table_id, boolean paid, LocalDateTime order_time, float order_price, int waitressId, boolean ready) {
+    public Order(int table_id, boolean paid, LocalDateTime order_time, BigDecimal order_price, int waitressId, boolean ready) {
         this.table_id = table_id;
         this.paid = paid;
         this.order_time = order_time;
@@ -65,11 +66,11 @@ public class Order {
         this.order_time = order_time;
     }
 
-    public float getOrder_price() {
+    public BigDecimal getOrder_price() {
         return order_price;
     }
 
-    public void setOrder_price(float order_price) {
+    public void setOrder_price(BigDecimal order_price) {
         this.order_price = order_price;
     }
 
@@ -87,5 +88,18 @@ public class Order {
 
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", table_id=" + table_id +
+                ", paid=" + paid +
+                ", order_time=" + order_time +
+                ", order_price=" + order_price +
+                ", waitress_id=" + waitress_id +
+                ", ready=" + ready +
+                '}';
     }
 }

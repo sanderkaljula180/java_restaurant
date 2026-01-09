@@ -2,10 +2,14 @@ package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.Item;
+import org.example.exceptions.ResourceNotAvailable;
+import org.example.exceptions.ResourcesNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemsRepository {
 
@@ -15,7 +19,7 @@ public class ItemsRepository {
         this.cp = cp;
     }
 
-    public List<Item> getAllItems() throws SQLException {
+    public List<Item> getAllItems() {
         List<Item> allItemsArrayList = new ArrayList<>();
         String sqlStatement = "SELECT * FROM items;";
         try (Connection connection = cp.createConnection()) {
@@ -25,13 +29,73 @@ public class ItemsRepository {
                 Item item = new Item(
                         resultSet.getInt(1),
                         resultSet.getString(2),
-                        resultSet.getInt(3),
+                        resultSet.getBigDecimal(3),
                         resultSet.getInt(4)
                 );
                 allItemsArrayList.add(item);
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
         return allItemsArrayList;
+    }
+
+    public Item findItemById(int itemId) {
+        String sqlStatement = "SELECT * FROM items WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, itemId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return helperForCreatingItemObj(resultSet);
+                } else {
+                    throw new ResourcesNotFoundException("Item not found: " + itemId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
+    // StringBuilder. Kaks for loopi.
+    public Map<Integer, Integer> findItemQuantitiesByIds(List<Integer> itemIds) {
+        if (itemIds.isEmpty()) {
+            throw new IllegalArgumentException("List for finding item quantities is empty");
+        }
+        StringBuilder sb = new StringBuilder("SELECT id, in_stock FROM items WHERE id IN (");
+        for (int i = 0; i < itemIds.size(); i++) {
+            sb.append("?");
+            if (i < itemIds.size() - 1) sb.append(", ");
+        }
+        sb.append(")");
+        String sqlStatement = sb.toString();
+        System.out.println(sqlStatement);
+        Map<Integer, Integer> quantityForItemId = new HashMap<>();
+
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            int i = 1;
+            for (Integer itemId : itemIds) {
+                statement.setInt(i++, itemId);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    quantityForItemId.put(resultSet.getInt(1), resultSet.getInt(2));
+                }
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+        return quantityForItemId;
+    }
+
+    private Item helperForCreatingItemObj(ResultSet resultSet) throws SQLException {
+        return new Item(
+                resultSet.getInt(1),
+                resultSet.getString(2),
+                resultSet.getBigDecimal(3),
+                resultSet.getInt(4)
+        );
     }
 
 }

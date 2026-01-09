@@ -1,15 +1,17 @@
 package org.example.entities;
 
+import java.math.BigDecimal;
+
 public class Item {
     private int id;
     private String itemName;
-    private float itemPrice;
+    private BigDecimal itemPrice;
     private int itemsInStock;
 
     public Item() {
     }
 
-    public Item(int id, String itemName, float itemPrice, int itemsInStock) {
+    public Item(int id, String itemName, BigDecimal itemPrice, int itemsInStock) {
         this.id = id;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -32,11 +34,11 @@ public class Item {
         this.itemName = item_name;
     }
 
-    public float getItem_price() {
+    public BigDecimal getItem_price() {
         return itemPrice;
     }
 
-    public void setItem_price(float item_price) {
+    public void setItem_price(BigDecimal item_price) {
         this.itemPrice = item_price;
     }
 

@@ -42,9 +42,17 @@ public class TableService {
             ));
         }
         return tableDTOS;
+
+        // I can use this after I can use waitress service and order service from here. This a problem
+//        return restaurantTableList.stream()
+//                .map(table -> Mapper.toTableDto(
+//                        table,
+//                        waitressRepository.findWaitressById(table.getWaitress_id()),
+//                        orderRepository.findOrdersByRestaurantTableId(table.getId())
+//                )).toList();
     }
 
-    public RestaurantTable getTableById(int tableId) throws SQLException {
+    public RestaurantTable findTableById(int tableId) throws SQLException {
         return tablesRepository.findTableByTableId(tableId);
     }
 

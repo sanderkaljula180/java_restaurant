@@ -1,6 +1,7 @@
 package org.example.api;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.example.configuration.StacktraceConfig;
 import org.example.dto.AddOrderRequestDTO;
 import org.example.dto.OrderItemsForOrderRequestDTO;
 import org.example.helpers.JsonResponseConverter;
@@ -11,6 +12,8 @@ import org.example.services.OrderService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +32,7 @@ public class OrderController {
         this.apiResponse = apiResponse;
     }
 
-    public void addNewOrder(HttpExchange httpExchange) {
+    public void addNewOrder(HttpExchange httpExchange) throws IOException {
         if (httpExchange.getRequestMethod().equals("POST")) {
             try {
                 JSONObject jsonObject = jsonResponseConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
@@ -46,10 +49,13 @@ public class OrderController {
                         jsonObject.getInt("tableId"),
                         orderItemsForOrderRequestDTOList
                 );
-                byte[] byteResponse = jsonResponseConverter.convertDTOIntoJsonByte(orderService.addNewOrder(addOrderRequestDTO));
+                System.out.println("BEFORE ADDNEWORDER");
+                orderService.addNewOrder(addOrderRequestDTO);
+//                byte[] byteResponse = jsonResponseConverter.convertDTOIntoJsonByte(orderService.addNewOrder(addOrderRequestDTO));
 
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                StacktraceConfig.logStackTraceFromThread(e);
+                errorResponse.errorResponse(httpExchange, e);
             }
         }
     }

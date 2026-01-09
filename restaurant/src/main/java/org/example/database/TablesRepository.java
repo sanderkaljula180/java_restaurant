@@ -3,6 +3,7 @@ package org.example.database;
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.RestaurantTable;
 import org.example.exceptions.DatabaseUpdateException;
+import org.example.exceptions.ResourceNotAvailable;
 import org.example.exceptions.ResourcesNotFoundException;
 
 import java.sql.*;
@@ -17,7 +18,7 @@ public class TablesRepository {
         this.cp = cp;
     }
 
-    public List<RestaurantTable> getAllTables() throws SQLException {
+    public List<RestaurantTable> getAllTables() {
         String sqlStatement = "SELECT * FROM restaurant_tables";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
@@ -28,10 +29,12 @@ public class TablesRepository {
                 }
                 return restaurantTableList;
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 
-    public RestaurantTable findTableByTableId(int tableId) throws SQLException {
+    public RestaurantTable findTableByTableId(int tableId) {
         String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ?";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
@@ -43,10 +46,12 @@ public class TablesRepository {
                     throw new ResourcesNotFoundException("Table not found: " + tableId);
                 }
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 
-    public RestaurantTable updateRestaurantTableById(RestaurantTable restaurantTable) throws SQLException {
+    public RestaurantTable updateRestaurantTableById(RestaurantTable restaurantTable) {
         String sqlStatement = "UPDATE restaurant_tables SET " +
                 "table_number = ?, " +
                 "occupied = ?, " +
@@ -65,10 +70,12 @@ public class TablesRepository {
             statement.setString(6, restaurantTable.getStatus());
             statement.setInt(7, restaurantTable.getId());
             return executeUpdateOnOneItemAndReturnObject(restaurantTable, statement);
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 
-    public RestaurantTable updateRestaurantTableStatusById(RestaurantTable restaurantTable) throws SQLException {
+    public RestaurantTable updateRestaurantTableStatusById(RestaurantTable restaurantTable) {
         String sqlStatement = "UPDATE restaurant_tables SET " +
                 "status = ? " +
                 "WHERE id = ?";
@@ -77,6 +84,8 @@ public class TablesRepository {
             statement.setString(1, restaurantTable.getStatus());
             statement.setInt(2, restaurantTable.getId());
             return executeUpdateOnOneItemAndReturnObject(restaurantTable, statement);
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 

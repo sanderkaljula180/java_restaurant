@@ -1,6 +1,7 @@
 package org.example.helpers;
 
 import org.example.dto.*;
+import org.example.entities.Item;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
@@ -74,6 +75,15 @@ public class Mapper {
         return new AddOrderRequestDTO(
                 tableId,
                 items
+        );
+    }
+
+    public static ItemDTO itemDTO(Item item) {
+        return new ItemDTO(
+                item.getId(),
+                item.getItem_name(),
+                item.getItem_price(),
+                item.getItemsInStock()
         );
     }
 

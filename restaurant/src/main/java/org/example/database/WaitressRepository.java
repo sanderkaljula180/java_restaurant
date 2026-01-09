@@ -3,6 +3,7 @@ package org.example.database;
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.Waitress;
 import org.example.exceptions.DatabaseUpdateException;
+import org.example.exceptions.ResourceNotAvailable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +20,7 @@ public class WaitressRepository {
         this.cp = cp;
     }
 
-    public Waitress findWaitressById(int waitress_id) throws SQLException {
+    public Waitress findWaitressById(int waitress_id) {
         String sqlStatement = "SELECT id, name, is_available FROM waitresses WHERE id = ?";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
@@ -29,11 +30,13 @@ public class WaitressRepository {
                     return helperFroCreatingWaitressObj(resultSet);
                 }
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
         return null;
     }
 
-    public List<Waitress> findAllAvailableWaitresses() throws SQLException {
+    public List<Waitress> findAllAvailableWaitresses() {
         String sqlStatement = "SELECT * FROM waitresses WHERE is_available = true";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
@@ -44,10 +47,12 @@ public class WaitressRepository {
                 }
                 return waitresses;
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 
-    public Waitress updateTableWaitresses(Waitress waitress) throws SQLException {
+    public Waitress updateTableWaitresses(Waitress waitress) {
         String sqlStatement = "UPDATE waitresses SET " +
                 "name = ?, " +
                 "is_available = ? " +
@@ -63,6 +68,8 @@ public class WaitressRepository {
             } else {
                 throw new DatabaseUpdateException("Database update query didn't work: " + statement);
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 

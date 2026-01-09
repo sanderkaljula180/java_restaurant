@@ -28,12 +28,13 @@ public class ItemController {
         this.jsonResponseConverter = jsonResponseConverter;
     }
 
+    // This also should go to service first
     public void getAllItems(HttpExchange httpExchange) throws IOException {
         if (httpExchange.getRequestMethod().equals("GET")) {
             try {
                 byte[] byteResponse = jsonResponseConverter.convertArrayIntoJsonByte(itemsRepository.getAllItems());
                 apiResponse.okResponse(byteResponse, httpExchange);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 StacktraceConfig.logStackTraceFromThread(e);
                 errorResponse.errorResponse(httpExchange, e);
             }
