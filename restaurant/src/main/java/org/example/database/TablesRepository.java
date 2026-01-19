@@ -19,7 +19,7 @@ public class TablesRepository {
     }
 
     public List<RestaurantTable> getAllTables() {
-        String sqlStatement = "SELECT * FROM restaurant_tables";
+        String sqlStatement = "SELECT * FROM restaurant_table";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -27,6 +27,7 @@ public class TablesRepository {
                 while (resultSet.next()) {
                     restaurantTableList.add(helperForCreatingRestaurantTableObj(resultSet));
                 }
+                System.out.println(restaurantTableList);
                 return restaurantTableList;
             }
         } catch (SQLException e) {
@@ -35,7 +36,7 @@ public class TablesRepository {
     }
 
     public RestaurantTable findTableByTableId(int tableId) {
-        String sqlStatement = "SELECT * FROM restaurant_tables WHERE id = ?";
+        String sqlStatement = "SELECT * FROM restaurant_table WHERE id = ?";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, tableId);
@@ -52,9 +53,9 @@ public class TablesRepository {
     }
 
     public RestaurantTable updateRestaurantTableById(RestaurantTable restaurantTable) {
-        String sqlStatement = "UPDATE restaurant_tables SET " +
+        String sqlStatement = "UPDATE restaurant_table SET " +
                 "table_number = ?, " +
-                "occupied = ?, " +
+                "is_occupied = ?, " +
                 "number_of_guests = ?, " +
                 "table_capacity = ?, " +
                 "waitress_id = ?, " +
@@ -76,7 +77,7 @@ public class TablesRepository {
     }
 
     public RestaurantTable updateRestaurantTableStatusById(RestaurantTable restaurantTable) {
-        String sqlStatement = "UPDATE restaurant_tables SET " +
+        String sqlStatement = "UPDATE restaurant_table SET " +
                 "status = ? " +
                 "WHERE id = ?";
         try (Connection connection = cp.createConnection()) {

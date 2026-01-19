@@ -1,0 +1,416 @@
+# These need to be in order, or it doesn't find them
+
+databaseChangeLog:
+    - changeSet:
+          id: create-items
+          author: sander
+          changes:
+              - createTable:
+                    tableName: items
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  primaryKey: true
+                                  nullable: false
+                        - column:
+                              name: item_name
+                              type: VARCHAR(255)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: item_price
+                              type: NUMERIC(19, 2)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: items_in_stock
+                              type: INTEGER
+                              constraints:
+                                  nullable: false
+    - changeSet:
+          id: create-waitresses
+          author: sander
+          changes:
+              - createTable:
+                    tableName: waitresses
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  primaryKey: true
+                                  nullable: false
+                        - column:
+                              name: waitress_name
+                              type: VARCHAR(255)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: is_available
+                              type: boolean
+                              defaultValueBoolean: true
+                              constraints:
+                                  nullable: false
+    - changeSet:
+          id: create-restaurant-table
+          author: sander
+          changes:
+              - createTable:
+                    tableName: restaurant_table
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  primaryKey: true
+                                  nullable: false
+                        - column:
+                            name: table_number
+                            type: INTEGER
+                            constraints:
+                              nullable: false
+                        - column:
+                            name: is_occupied
+                            type: boolean
+                            defaultValueBoolean: false
+                            constraints:
+                              nullable: false
+                        - column:
+                            name: number_of_guests
+                            type: INTEGER
+                            constraints:
+                              nullable: false
+                        - column:
+                            name: table_capacity
+                            type: INTEGER
+                            constraints:
+                              nullable: false
+                        - column:
+                            name: waitress_id
+                            type: BIGINT
+                            constraints:
+                              nullable: true
+                        - column:
+                            name: status
+                            type: VARCHAR(50)
+                            constraints:
+                              nullable: false
+              - addForeignKeyConstraint:
+                  baseTableName: restaurant_table
+                  baseColumnNames: waitress_id
+                  referencedTableName: waitresses
+                  referencedColumnNames: id
+                  constraintName: fk_restaurant_table_waitress
+                  onDelete: SET NULL
+    - changeSet:
+        id: create-orders
+        author: sander
+        changes:
+          - createTable:
+              tableName: orders
+              columns:
+                - column:
+                    name: id
+                    type: BIGINT
+                    autoIncrement: true
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+                - column:
+                    name: table_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+                - column:
+                    name: is_paid
+                    type: boolean
+                    defaultValueBoolean: false
+                    constraints:
+                      nullable: false
+                - column:
+                    name: order_time
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+                - column:
+                    name: order_price
+                    type: NUMERIC(19, 2)
+                    constraints:
+                      nullable: false
+                - column:
+                    name: waitress_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+                - column:
+                    name: is_ready
+                    type: boolean
+                    defaultValueBoolean: false
+                    constraints:
+                      nullable: false
+          - addForeignKeyConstraint:
+              baseTableName: orders
+              baseColumnNames: table_id
+              referencedTableName: restaurant_table
+              referencedColumnNames: id
+              constraintName: fk_order_restaurant_table
+          - addForeignKeyConstraint:
+              baseTableName: orders
+              baseColumnNames: waitress_id
+              referencedTableName: waitresses
+              referencedColumnNames: id
+              constraintName: fk_order_waitresses
+    - changeSet:
+        id: create-order-items
+        author: sander
+        changes:
+          - createTable:
+              tableName: order_items
+              columns:
+                - column:
+                    name: id
+                    type: BIGINT
+                    autoIncrement: true
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+                - column:
+                    name: order_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+                - column:
+                    name: item_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+                - column:
+                    name: quantity
+                    type: INTEGER
+                    constraints:
+                      nullable: false
+                - column:
+                    name: price
+                    type: NUMERIC(19, 2)
+                    constraints:
+                      nullable: false
+                - column:
+                    name: is_ready
+                    type: boolean
+                    defaultValueBoolean: false
+                    constraints:
+                      nullable: false
+          - addForeignKeyConstraint:
+              baseTableName: order_items
+              baseColumnNames: order_id
+              referencedTableName: orders
+              referencedColumnNames: id
+              constraintName: fk_order_items_orders
+          - addForeignKeyConstraint:
+              baseTableName: order_items
+              baseColumnNames: item_id
+              referencedTableName: items
+              referencedColumnNames: id
+              constraintName: fk_order_items_items
+
+    - changeSet:
+        id: insert-waitresses
+        author: sander
+        changes:
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Anna" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Maria" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Laura" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Katrin" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Sofia" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Elena" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Kristiina" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Julia" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Marta" }
+          - insert:
+              tableName: waitresses
+              columns:
+                - column: { name: waitress_name, value: "Helena" }
+
+    - changeSet:
+        id: insert-restaurant-tables
+        author: sander
+        changes:
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 1 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 2 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 2 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 2 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 3 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 4 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 4 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 4 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 5 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 6 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 6 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 6 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 7 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 8 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 8 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 8 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 9 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 4 }
+                - column: { name: status, value: "AVAILABLE" }
+          - insert:
+              tableName: restaurant_table
+              columns:
+                - column: { name: table_number, valueNumeric: 10 }
+                - column: { name: number_of_guests, valueNumeric: 0 }
+                - column: { name: table_capacity, valueNumeric: 2 }
+                - column: { name: status, value: "AVAILABLE" }
+
+    - changeSet:
+        id: insert-items
+        author: sander
+        changes:
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Burger" }
+                - column: { name: item_price, valueNumeric: 8.50 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Cheeseburger" }
+                - column: { name: item_price, valueNumeric: 9.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Chicken Burger" }
+                - column: { name: item_price, valueNumeric: 9.50 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Fries" }
+                - column: { name: item_price, valueNumeric: 3.50 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Onion Rings" }
+                - column: { name: item_price, valueNumeric: 4.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Caesar Salad" }
+                - column: { name: item_price, valueNumeric: 7.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Pasta Carbonara" }
+                - column: { name: item_price, valueNumeric: 11.50 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Margherita Pizza" }
+                - column: { name: item_price, valueNumeric: 10.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Pepperoni Pizza" }
+                - column: { name: item_price, valueNumeric: 11.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Fish & Chips" }
+                - column: { name: item_price, valueNumeric: 12.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Chocolate Cake" }
+                - column: { name: item_price, valueNumeric: 5.00 }
+                - column: { name: items_in_stock, valueNumeric: 50 }
+          - insert:
+              tableName: items
+              columns:
+                - column: { name: item_name, value: "Ice Cream" }
+                - column: { name: item_price, valueNumeric: 4.50 }
+                - column: { name: items_in_stock, valueNumeric: 50 }

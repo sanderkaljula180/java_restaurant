@@ -4,6 +4,7 @@ import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
 import org.example.entities.Waitress;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ObjectFactory {
         return waitress;
     }
 
-    public static Order createNewOrderObject(int orderId, int tableId, boolean isPaid, LocalDateTime orderTime, float orderPrice, int waitressId, boolean isReady) {
+    public static Order createNewOrderObject(int orderId, int tableId, boolean isPaid, LocalDateTime orderTime, BigDecimal orderPrice, int waitressId, boolean isReady) {
         Order order = new Order(
                 orderId,
                 tableId,

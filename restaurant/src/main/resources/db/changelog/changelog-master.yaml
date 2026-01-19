@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changelog_tables.yaml
+      # next version be like file: db/changelog/changelog_2025_09_03.yaml

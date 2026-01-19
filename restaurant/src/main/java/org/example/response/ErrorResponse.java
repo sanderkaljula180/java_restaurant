@@ -90,7 +90,7 @@ public class ErrorResponse {
                 LocalDateTime.now(),
                 500,
                 "Internal Server Error",
-                "Unexpected server error",
+                e.getMessage(),
                 httpExchange.getRequestURI().getPath()
         );
     }

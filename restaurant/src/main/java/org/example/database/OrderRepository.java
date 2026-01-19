@@ -21,7 +21,7 @@ public class OrderRepository {
     
     public List<Order> findOrdersByRestaurantTableId(int tableId) {
         List<Order> ordersByTableId = new ArrayList<>();
-        String sqlStatement = "SELECT * FROM orders WHERE table_id = ? AND paid = FALSE";
+        String sqlStatement = "SELECT * FROM orders WHERE table_id = ? AND is_paid = FALSE";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, tableId);
@@ -37,8 +37,8 @@ public class OrderRepository {
     }
 
     public Order insertNewOrderAndReturnOrder(Order newOrder) {
-        String sqlStatement = "INSERT INTO orders (table_id, paid, order_time, order_price, waitress_id, is_ready)" +
-                "VALUES (?, ?, ?, ?, ?, ?) RETURNING *";
+        String sqlStatement = "INSERT INTO orders (table_id, is_paid, order_time, order_price, waitress_id, is_ready)" +
+                " VALUES (?, ?, ?, ?, ?, ?) RETURNING id, table_id, is_paid, order_time, order_price, waitress_id, is_ready";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, newOrder.getTable_id());
@@ -55,7 +55,7 @@ public class OrderRepository {
                 }
             }
         } catch (SQLException e) {
-        throw new ResourceNotAvailable("Database error", e);
+            throw new ResourceNotAvailable("Database error", e);
         }
     }
 

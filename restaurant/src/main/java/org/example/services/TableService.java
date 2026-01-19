@@ -33,6 +33,7 @@ public class TableService {
 
     public List<TableDTO> getAllTables() throws SQLException {
         List<RestaurantTable> restaurantTableList = tablesRepository.getAllTables();
+        System.out.println(restaurantTableList);
         List<TableDTO> tableDTOS = new ArrayList<>();
         for (RestaurantTable table : restaurantTableList) {
             tableDTOS.add(Mapper.toTableDto(

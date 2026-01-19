@@ -24,11 +24,17 @@ public class ItemService {
     public boolean areThereEnoughItems(List<OrderItemsForOrderRequestDTO> items) {
         List<Integer> itemIds = items.stream().map(OrderItemsForOrderRequestDTO::getItemId).toList();
         Map<Integer, Integer> itemQuantitiesById = itemsRepository.findItemQuantitiesByIds(itemIds);
+        for (OrderItemsForOrderRequestDTO item : items) {
+            if (itemQuantitiesById.get(item.getItemId()) < item.getQuantity()) {
+                return false;
+            }
+        }
         return true;
     }
 
-    public void removeItemQuantity() {
-
+    public int reduceItemQuantity(int numberToReduce, int itemId) {
+        itemsRepository.reduceItemQuantity(numberToReduce, itemId);
+        return numberToReduce;
     }
 
 }

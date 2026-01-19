@@ -56,15 +56,12 @@ public class OrderService {
          *
          * No i gotta go from top to bottom
          * **/
-        System.out.println("HERE");
-        if (itemService.areThereEnoughItems(addOrderRequestDTO.getItems())) {
-            System.out.println("SEE ON TRUE PRAEGU");
+
+        if (!itemService.areThereEnoughItems(addOrderRequestDTO.getItems())) {
+            throw new IllegalStateException("Not enough items in stock");
         }
 
         RestaurantTable restaurantTable = tableService.findTableById(addOrderRequestDTO.getTableId());
-
-
-
         Order newOrder = new Order(
                 restaurantTable.getId(),
                 false,
@@ -73,9 +70,8 @@ public class OrderService {
                 restaurantTable.getWaitress_id(),
                 false
         );
-
         newOrder = orderRepository.insertNewOrderAndReturnOrder(newOrder);
-        List<OrderItemDTO> orderItemDTOList = orderItemService.createOrderItems(addOrderRequestDTO.getItems(), newOrder.getId());
+        orderItemService.createOrderItems(addOrderRequestDTO.getItems(), newOrder.getId());
 
 
 

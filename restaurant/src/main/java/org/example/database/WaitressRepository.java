@@ -21,7 +21,7 @@ public class WaitressRepository {
     }
 
     public Waitress findWaitressById(int waitress_id) {
-        String sqlStatement = "SELECT id, name, is_available FROM waitresses WHERE id = ?";
+        String sqlStatement = "SELECT id, waitress_name, is_available FROM waitresses WHERE id = ?";
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setInt(1, waitress_id);
@@ -54,7 +54,7 @@ public class WaitressRepository {
 
     public Waitress updateTableWaitresses(Waitress waitress) {
         String sqlStatement = "UPDATE waitresses SET " +
-                "name = ?, " +
+                "waitress_name = ?, " +
                 "is_available = ? " +
                 "WHERE id = ?";
         try (Connection connection = cp.createConnection()) {

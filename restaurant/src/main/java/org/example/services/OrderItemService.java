@@ -27,11 +27,12 @@ public class OrderItemService {
                 .map(item -> new OrderItem(
                         orderId,
                         item.getItemId(),
-                        item.getQuantity(),
+                        itemService.reduceItemQuantity(item.getQuantity(), item.getItemId()),
                         orderItemPrice(item.getQuantity(), item.getItemId()),
                         false
                 )).toList();
 
+        orderItemRepository.insertNewOrderItems(orderItemsListForDB);
         return null;
     }
 

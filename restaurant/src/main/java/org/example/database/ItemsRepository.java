@@ -2,6 +2,7 @@ package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.Item;
+import org.example.exceptions.DatabaseUpdateException;
 import org.example.exceptions.ResourceNotAvailable;
 import org.example.exceptions.ResourcesNotFoundException;
 
@@ -57,21 +58,18 @@ public class ItemsRepository {
         }
     }
 
-    // StringBuilder. Kaks for loopi.
     public Map<Integer, Integer> findItemQuantitiesByIds(List<Integer> itemIds) {
         if (itemIds.isEmpty()) {
             throw new IllegalArgumentException("List for finding item quantities is empty");
         }
-        StringBuilder sb = new StringBuilder("SELECT id, in_stock FROM items WHERE id IN (");
+        StringBuilder sb = new StringBuilder("SELECT id, items_in_stock FROM items WHERE id IN (");
         for (int i = 0; i < itemIds.size(); i++) {
             sb.append("?");
             if (i < itemIds.size() - 1) sb.append(", ");
         }
         sb.append(")");
         String sqlStatement = sb.toString();
-        System.out.println(sqlStatement);
         Map<Integer, Integer> quantityForItemId = new HashMap<>();
-
         try (Connection connection = cp.createConnection()) {
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             int i = 1;
@@ -87,6 +85,22 @@ public class ItemsRepository {
             throw new ResourceNotAvailable("Database error", e);
         }
         return quantityForItemId;
+    }
+
+    // IF YOU COME HERE WHEN REFACTORING THEN CHANGE PREPAREDSTATEMENT EVERY WHERE LIKE THIS CUZ IT TAKES DB RESOURCES
+    public void reduceItemQuantity(int numberToReduce, int itemId) {
+        String sqlStatement = "UPDATE items SET items_in_stock = items_in_stock - ? WHERE id = ?";
+        try (Connection c = cp.createConnection();
+             PreparedStatement statement = c.prepareStatement(sqlStatement)) {
+            statement.setInt(1, numberToReduce);
+            statement.setInt(2, itemId);
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 1) {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
     }
 
     private Item helperForCreatingItemObj(ResultSet resultSet) throws SQLException {

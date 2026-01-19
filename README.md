@@ -116,6 +116,7 @@ API's:
       }
   - Create order and order_items in database
   - Change table status to 'WAITING_FOR_ORDER'
+  - Return just "Order added"
 
 - PUT /api/tables/change_status/order_completed
   - changes status to 'ORDER_COMPLETED'
@@ -144,3 +145,12 @@ Table statuses:
  - ORDER_COMPLETED - If order is on the table
  - READY_TO_PAY
 
+LIQUIBASE
+For setting up liquibase you have to add liquibase dependency and plugin. 
+There are three initial files that should be created:
+liquibase.properties for database connection
+changelog-master.yaml
+changelog_tables.yaml
+
+To run liquibase update use this command
+.\mvnw liquibase:update
