@@ -53,7 +53,7 @@ public class TableService {
 //                )).toList();
     }
 
-    public RestaurantTable findTableById(int tableId) throws SQLException {
+    public RestaurantTable findTableById(int tableId) {
         return tablesRepository.findTableByTableId(tableId);
     }
 
@@ -110,14 +110,12 @@ public class TableService {
         if (restaurantTable.getStatus().equals("READY_FOR_ORDER")) {
             throw new ConflictException("Table has already status READY_FOR_ORDER");
         }
-
         if (restaurantTable.getStatus().equals("AVAILABLE")) {
             String exceptionMessage = restaurantTable.isOccupied()
                     ? "Table is AVAILABLE but table is also occupied. This can't happen."
                     : "Table is AVAILABLE, so occupy table first.";
             throw new ConflictException(exceptionMessage);
         }
-
         String oldStatus = restaurantTable.getStatus();
         restaurantTable.setStatus("READY_FOR_ORDER");
         return Mapper.toTableStatusUpdateResponseDTO(
@@ -125,6 +123,25 @@ public class TableService {
                 oldStatus
         );
 
+    }
+
+    public TableStatusUpdateResponseDTO updateTableStatusIntoWaitingForOrder(int tableId) {
+        RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
+        if (restaurantTable.getStatus().equals("WAITING_FOR_ORDER")) {
+            throw new ConflictException("Table has already status WAITING_FOR_ORDER");
+        }
+        if (restaurantTable.getStatus().equals("AVAILABLE")) {
+            String exceptionMessage = restaurantTable.isOccupied()
+                    ? "Table is AVAILABLE but table is also occupied. This can't happen."
+                    : "Table is AVAILABLE, so occupy table first.";
+            throw new ConflictException(exceptionMessage);
+        }
+        String oldStatus = restaurantTable.getStatus();
+        restaurantTable.setStatus("WAITING_FOR_ORDER");
+        return Mapper.toTableStatusUpdateResponseDTO(
+                tablesRepository.updateRestaurantTableStatusById(restaurantTable),
+                oldStatus
+        );
     }
 
 }

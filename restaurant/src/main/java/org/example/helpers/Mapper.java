@@ -1,10 +1,7 @@
 package org.example.helpers;
 
 import org.example.dto.*;
-import org.example.entities.Item;
-import org.example.entities.Order;
-import org.example.entities.RestaurantTable;
-import org.example.entities.Waitress;
+import org.example.entities.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -86,5 +83,20 @@ public class Mapper {
                 item.getItemsInStock()
         );
     }
+
+    public static AddOrderResponseDTO addOrderResponseDTO(Order order, TableStatusUpdateResponseDTO tableStatusUpdateResponseDTO, List<OrderItemDTO> orderItemDTO) {
+        return new AddOrderResponseDTO(
+                "Order created for table " + order.getTable_id(),
+                tableStatusUpdateResponseDTO.getNewStatus(),
+                orderItemDTO,
+                order.getOrder_price()
+        );
+    }
+
+//    public static OrderItemsForKitchenDTO orderItemsForKitchenDTO(OrderItem orderItem) {
+//        return new OrderItemsForKitchenDTO(
+//                orderItem.g
+//        );
+//    }
 
 }

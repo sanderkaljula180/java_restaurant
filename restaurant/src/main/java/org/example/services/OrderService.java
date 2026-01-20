@@ -6,6 +6,7 @@ import org.example.dto.AddOrderResponseDTO;
 import org.example.dto.OrderItemDTO;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
+import org.example.helpers.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,34 +30,7 @@ public class OrderService {
         this.itemService = itemService;
     }
 
-    public AddOrderResponseDTO addNewOrder(AddOrderRequestDTO addOrderRequestDTO) throws SQLException {
-        /** New Order object
-         * FIRST THING IS ALSO VALIDATE THAT THERE IS ENOUG ITEMS LEFT
-         * I have to create Order object first becuase OrderItem needs order ID and then I will just update the order if needed.
-         *
-         * Add tableid
-         * add time
-         * add order price
-         * add waitress from table object
-         * Validate that it is the correct table
-         * Validate that it is the correct waitress
-         * Change table status into WAITING_FOR_ORDER
-         *
-         *
-         *
-         * New OrderItem objects
-         * Add order id
-         * Add price
-         * Add quantity
-         * Add item id
-         *
-         * Create Item object
-         * Remove Item stock quantity
-         *
-         *
-         * No i gotta go from top to bottom
-         * **/
-
+    public AddOrderResponseDTO addNewOrder(AddOrderRequestDTO addOrderRequestDTO) {
         if (!itemService.areThereEnoughItems(addOrderRequestDTO.getItems())) {
             throw new IllegalStateException("Not enough items in stock");
         }
@@ -71,11 +45,15 @@ public class OrderService {
                 false
         );
         newOrder = orderRepository.insertNewOrderAndReturnOrder(newOrder);
-        orderItemService.createOrderItems(addOrderRequestDTO.getItems(), newOrder.getId());
+        List<OrderItemDTO> orderItemDTO = orderItemService.createOrderItems(addOrderRequestDTO.getItems(), newOrder.getId());
 
+        newOrder.setOrder_price(orderItemDTO.stream().map(OrderItemDTO::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
+        orderRepository.updateOrderPrice(newOrder);
 
-
-
-        return null;
+        return Mapper.addOrderResponseDTO(
+                newOrder,
+                tableService.updateTableStatusIntoWaitingForOrder(newOrder.getTable_id()),
+                orderItemDTO
+        );
     }
 }

@@ -49,10 +49,8 @@ public class OrderController {
                         jsonObject.getInt("tableId"),
                         orderItemsForOrderRequestDTOList
                 );
-                System.out.println("BEFORE ADDNEWORDER");
-                orderService.addNewOrder(addOrderRequestDTO);
-//                byte[] byteResponse = jsonResponseConverter.convertDTOIntoJsonByte(orderService.addNewOrder(addOrderRequestDTO));
-
+                byte[] byteResponse = jsonResponseConverter.convertDTOIntoJsonByte(orderService.addNewOrder(addOrderRequestDTO));
+                apiResponse.okResponse(byteResponse, httpExchange);
             } catch (Exception e) {
                 StacktraceConfig.logStackTraceFromThread(e);
                 errorResponse.errorResponse(httpExchange, e);

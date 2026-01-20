@@ -2,6 +2,7 @@ package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
 import org.example.entities.Order;
+import org.example.exceptions.DatabaseUpdateException;
 import org.example.exceptions.ResourceNotAvailable;
 import org.example.exceptions.ResourcesNotFoundException;
 
@@ -53,6 +54,21 @@ public class OrderRepository {
                 } else {
                     throw new ResourcesNotFoundException("Order not found after creation.");
                 }
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
+    public void updateOrderPrice(Order updateOrder) {
+        String sqlStatement = "UPDATE orders SET order_price = ? WHERE id = ?";
+        try (Connection connection = cp.createConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+            statement.setBigDecimal(1, updateOrder.getOrder_price());
+            statement.setInt(2, updateOrder.getId());
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 1) {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
             }
         } catch (SQLException e) {
             throw new ResourceNotAvailable("Database error", e);

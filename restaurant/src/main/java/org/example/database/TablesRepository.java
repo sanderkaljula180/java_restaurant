@@ -100,13 +100,13 @@ public class TablesRepository {
 
     private RestaurantTable helperForCreatingRestaurantTableObj(ResultSet resultSet) throws SQLException {
         return new RestaurantTable(
-                resultSet.getInt(1),
-                resultSet.getInt(2),
-                resultSet.getBoolean(3),
-                resultSet.getInt(4),
-                resultSet.getInt(5),
-                resultSet.getInt(6),
-                resultSet.getString(7)
+                resultSet.getInt("id"),
+                resultSet.getInt("table_number"),
+                resultSet.getBoolean("is_occupied"),
+                resultSet.getInt("number_of_guests"),
+                resultSet.getInt("table_capacity"),
+                resultSet.getInt("waitress_id"),
+                resultSet.getString("status")
         );
     }
 

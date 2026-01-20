@@ -3,8 +3,10 @@ package org.example.services;
 import org.example.database.OrderItemRepository;
 import org.example.dto.ItemDTO;
 import org.example.dto.OrderItemDTO;
+import org.example.dto.OrderItemsForKitchenDTO;
 import org.example.dto.OrderItemsForOrderRequestDTO;
 import org.example.entities.OrderItem;
+import org.example.helpers.Mapper;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -31,8 +33,17 @@ public class OrderItemService {
                         orderItemPrice(item.getQuantity(), item.getItemId()),
                         false
                 )).toList();
-
         orderItemRepository.insertNewOrderItems(orderItemsListForDB);
+        return orderItemsListForDB.stream().map(item -> new OrderItemDTO(
+                item.getOrder_id(),
+                item.getItem_id(),
+                item.getQuantity(),
+                item.getPrice(),
+                item.isReady()
+        )).toList();
+    }
+
+    public List<OrderItemsForKitchenDTO> getAllOrderItems() {
         return null;
     }
 

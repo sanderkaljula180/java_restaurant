@@ -72,14 +72,19 @@ API's:
     - Send back json response for validation
 
 - GET /api/orders
-  - This will send a list with all orders and its order_items. This is for kitchen
+  - This will send a list with all orders and its order_items. This is for waitress
     - Order id
     - is_ready order
     - table id
     - order_time
+    - waitress
     - order items
       - order items quantity
       - is_complete
+
+- GET /api/order-items
+  - This will send all order items. This is for kitchen
+  - List of order items with their status
 
 - PUT /api/order-items/{id}/is_completed
   - changes order item is_completed to true

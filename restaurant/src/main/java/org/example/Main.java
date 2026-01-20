@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.api.ItemController;
 import org.example.api.OrderController;
+import org.example.api.OrderItemController;
 import org.example.api.TablesController;
 import org.example.configuration.DBConnectionPool;
 import org.example.configuration.HttpServerConfiguration;
@@ -80,8 +81,13 @@ public class Main {
               errorResponse,
               apiResponse
         );
+        OrderItemController orderItemController = new OrderItemController(
+                jsonResponseConverter,
+                errorResponse,
+                orderItemService
+        );
 
-        ApiRouter apiRouter = new ApiRouter(itemController, tablesController, orderController);
+        ApiRouter apiRouter = new ApiRouter(itemController, tablesController, orderController, orderItemController);
         HttpServerConfiguration config = new HttpServerConfiguration(apiRouter);
         HttpServer httpServer = config.httpServer();
         httpServer.start();
