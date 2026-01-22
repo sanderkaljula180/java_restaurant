@@ -27,7 +27,6 @@ public class TablesRepository {
                 while (resultSet.next()) {
                     restaurantTableList.add(helperForCreatingRestaurantTableObj(resultSet));
                 }
-                System.out.println(restaurantTableList);
                 return restaurantTableList;
             }
         } catch (SQLException e) {

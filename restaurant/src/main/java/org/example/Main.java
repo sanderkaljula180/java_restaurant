@@ -84,7 +84,8 @@ public class Main {
         OrderItemController orderItemController = new OrderItemController(
                 jsonResponseConverter,
                 errorResponse,
-                orderItemService
+                orderItemService,
+                apiResponse
         );
 
         ApiRouter apiRouter = new ApiRouter(itemController, tablesController, orderController, orderItemController);

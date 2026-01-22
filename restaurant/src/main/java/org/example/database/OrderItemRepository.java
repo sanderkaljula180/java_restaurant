@@ -1,6 +1,8 @@
 package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
+import org.example.dto.OrderItemsForKitchenDTO;
+import org.example.dto.OrderItemsForOrderRequestDTO;
 import org.example.entities.Order;
 import org.example.entities.OrderItem;
 import org.example.exceptions.DatabaseUpdateException;
@@ -10,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderItemRepository {
@@ -36,8 +39,27 @@ public class OrderItemRepository {
                     throw new DatabaseUpdateException("Database insert query didn't work: " + statement);
                 }
             }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
 
-
+    public List<OrderItemsForKitchenDTO> getAllOrderItemsForKitchen() {
+        String sqlStatement = "SELECT i.item_name, oi.quantity, oi.id, oi.is_ready FROM order_items oi JOIN items i ON oi.item_id = i.id";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<OrderItemsForKitchenDTO> orderItemsForKitchenDTO = new ArrayList<>();
+                while (resultSet.next()) {
+                    orderItemsForKitchenDTO.add(new OrderItemsForKitchenDTO(
+                            resultSet.getString("item_name"),
+                            resultSet.getInt("quantity"),
+                            resultSet.getInt("id"),
+                            resultSet.getBoolean("is_ready")
+                    ));
+                }
+                return orderItemsForKitchenDTO;
+            }
         } catch (SQLException e) {
             throw new ResourceNotAvailable("Database error", e);
         }

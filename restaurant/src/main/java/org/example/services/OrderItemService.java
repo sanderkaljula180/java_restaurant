@@ -44,7 +44,7 @@ public class OrderItemService {
     }
 
     public List<OrderItemsForKitchenDTO> getAllOrderItems() {
-        return null;
+        return orderItemRepository.getAllOrderItemsForKitchen();
     }
 
     private BigDecimal orderItemPrice(int quantity, int itemId) {
