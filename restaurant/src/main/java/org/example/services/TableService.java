@@ -144,4 +144,29 @@ public class TableService {
         );
     }
 
+    // This needs to be refactored. Left message in tablesRepository.updateRestaurantTableStatusById
+    public TableStatusUpdateResponseDTO updateTableStatusIntoOrderCompleted(int tableId) {
+        //RestaurantTable restaurantTable = tablesRepository.findTableByTableId(tableId);
+        RestaurantTableOrderCompletedDTO restaurantTable = tablesRepository.findTableWithJoinOrderByTableId(tableId);
+        if (restaurantTable.getStatus().equals("ORDER_COMPLETED")) {
+            throw new ConflictException("Table has already status ORDER_COMPLETED");
+        }
+        if (!restaurantTable.isAllThisTableOrdersCompleted()) {
+            throw new ConflictException("Orders for this table are not ready, can't set status into ORDER_COMPLETED");
+        }
+        if (restaurantTable.getStatus().equals("AVAILABLE")) {
+            String exceptionMessage = restaurantTable.isOccupied()
+                    ? "Table is AVAILABLE but table is also occupied. This can't happen."
+                    : "Table is AVAILABLE, so occupy table first.";
+            throw new ConflictException(exceptionMessage);
+        }
+        tablesRepository.updateRestaurantTableStatusIntoOrderCompleted(restaurantTable.getTableId(), "ORDER_COMPLETED");
+        return new TableStatusUpdateResponseDTO(
+                restaurantTable.getTableId(),
+                restaurantTable.getStatus(),
+                "ORDER_COMPLETED",
+                "Table status was updated."
+        );
+    }
+
 }

@@ -4,8 +4,10 @@ import org.example.database.OrderRepository;
 import org.example.dto.AddOrderRequestDTO;
 import org.example.dto.AddOrderResponseDTO;
 import org.example.dto.OrderItemDTO;
+import org.example.dto.OrderStatusUpdateDTO;
 import org.example.entities.Order;
 import org.example.entities.RestaurantTable;
+import org.example.exceptions.ConflictException;
 import org.example.helpers.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,5 +57,20 @@ public class OrderService {
                 tableService.updateTableStatusIntoWaitingForOrder(newOrder.getTable_id()),
                 orderItemDTO
         );
+    }
+
+    public void markOrderAsComplete(int orderId) {
+        boolean orderStatus = orderRepository.getOrderStatusById(orderId);
+        if (orderStatus) {
+            throw new ConflictException("Order is already ready");
+        }
+        orderRepository.updateOrderStatusIntoReady(orderId);
+    }
+
+    public void checkIfOrderOrOrderItemIsReady(int orderItemId) {
+        OrderStatusUpdateDTO orderStatusUpdateDTO = orderItemService.checkIfAllRelatedOrderItemsAreReady(orderItemId);
+        if (orderStatusUpdateDTO.isOrderItemsStatuses()) {
+            markOrderAsComplete(orderStatusUpdateDTO.getOrderId());
+        }
     }
 }

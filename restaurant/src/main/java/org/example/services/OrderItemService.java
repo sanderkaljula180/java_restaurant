@@ -1,11 +1,9 @@
 package org.example.services;
 
 import org.example.database.OrderItemRepository;
-import org.example.dto.ItemDTO;
-import org.example.dto.OrderItemDTO;
-import org.example.dto.OrderItemsForKitchenDTO;
-import org.example.dto.OrderItemsForOrderRequestDTO;
+import org.example.dto.*;
 import org.example.entities.OrderItem;
+import org.example.exceptions.ConflictException;
 import org.example.helpers.Mapper;
 
 import java.math.BigDecimal;
@@ -51,6 +49,15 @@ public class OrderItemService {
         ItemDTO itemDTO = itemService.findItemById(itemId);
         BigDecimal itemPrice = itemDTO.getItemPrice();
         return itemPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public OrderStatusUpdateDTO checkIfAllRelatedOrderItemsAreReady(int orderItemId) {
+        boolean orderItemStatus = orderItemRepository.getOrderItemStatusById(orderItemId);
+        if (orderItemStatus) {
+            throw new ConflictException("Order item is already ready");
+        }
+        orderItemRepository.updateOrderItemIntoReady(orderItemId);
+        return orderItemRepository.areAllRelatedOrderItemsReady(orderItemId);
     }
 
 }

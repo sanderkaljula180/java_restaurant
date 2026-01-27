@@ -32,7 +32,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
-
         DBConnectionPool pool = new DBConnectionPool();
         ItemsRepository itemsRepository = new ItemsRepository(pool);
         TablesRepository tablesRepository = new TablesRepository(pool);
@@ -76,10 +75,10 @@ public class Main {
                 apiResponse
         );
         OrderController orderController = new OrderController(
-              orderService,
-              jsonResponseConverter,
-              errorResponse,
-              apiResponse
+                orderService,
+                jsonResponseConverter,
+                errorResponse,
+                apiResponse
         );
         OrderItemController orderItemController = new OrderItemController(
                 jsonResponseConverter,

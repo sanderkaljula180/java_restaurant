@@ -21,6 +21,11 @@ public class ApiResponse {
         response.close();
     }
 
+    public void noContentResponse(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(200, -1);
+        exchange.close();
+    }
+
     public void createdResponse(byte[] byteResponse, HttpExchange httpExchange) {
         LocalDateTime time =  LocalDateTime.now();
     }

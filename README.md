@@ -131,7 +131,7 @@ API's:
 
 
 
-- PUT /api/tables/{id}/vacate
+- PUT payment api
   - Sets is_paid true
   - Sets table status to 'AVAILABLE'
   - Sets waitress_id in table also null

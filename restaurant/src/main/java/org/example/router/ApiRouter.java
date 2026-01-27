@@ -30,5 +30,7 @@ public class ApiRouter {
         httpServer.createContext("/api/tables/change_status/ready_for_order", tablesController::changeTableStatusIntoReadyForOrder);
         httpServer.createContext("/api/order/add_order", orderController::addNewOrder);
         httpServer.createContext("/api/order-items", orderItemController::getAllOrderItems);
+        httpServer.createContext("/api/order/order-items/is_completed", orderController::updateOrderItemIntoCompleted);
+        httpServer.createContext("/api/tables/change_status/order_completed", tablesController::changeTableStatusIntoOrderCompleted);
     }
 }

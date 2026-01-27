@@ -50,7 +50,6 @@ public class TablesController {
                 StacktraceConfig.logStackTraceFromThread(e);
                 errorResponse.errorResponse(httpExchange, e);
             }
-
         }
     }
 
@@ -78,6 +77,22 @@ public class TablesController {
                 JSONObject jsonObject = jsonConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
                 byte[] byteResponse = jsonConverter.convertDTOIntoJsonByte(
                         tableService.updateTableStatusIntoReadyForOrder(jsonObject.getInt("tableId"))
+                );
+                apiResponse.okResponse(byteResponse, httpExchange);
+            } catch (Exception e) {
+                StacktraceConfig.logStackTraceFromThread(e);
+                errorResponse.errorResponse(httpExchange, e);
+            }
+
+        }
+    }
+
+    public void changeTableStatusIntoOrderCompleted(HttpExchange httpExchange) throws IOException {
+        if (httpExchange.getRequestMethod().equals("PUT")) {
+            try {
+                JSONObject jsonObject = jsonConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
+                byte[] byteResponse = jsonConverter.convertDTOIntoJsonByte(
+                        tableService.updateTableStatusIntoOrderCompleted(jsonObject.getInt("tableId"))
                 );
                 apiResponse.okResponse(byteResponse, httpExchange);
             } catch (Exception e) {

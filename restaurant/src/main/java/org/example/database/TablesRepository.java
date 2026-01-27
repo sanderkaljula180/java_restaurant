@@ -1,6 +1,8 @@
 package org.example.database;
 
 import org.example.configuration.DBConnectionPool;
+import org.example.dto.RestaurantTableOrderCompletedDTO;
+import org.example.dto.TableStatusUpdateResponseDTO;
 import org.example.entities.RestaurantTable;
 import org.example.exceptions.DatabaseUpdateException;
 import org.example.exceptions.ResourceNotAvailable;
@@ -75,6 +77,8 @@ public class TablesRepository {
         }
     }
 
+    // I have to refactor updateRestaurantTableStatusById and
+    // updateRestaurantTableStatusIntoOrderCompleted. Make it use DTO both so I can delete one from here.
     public RestaurantTable updateRestaurantTableStatusById(RestaurantTable restaurantTable) {
         String sqlStatement = "UPDATE restaurant_table SET " +
                 "status = ? " +
@@ -84,6 +88,45 @@ public class TablesRepository {
             statement.setString(1, restaurantTable.getStatus());
             statement.setInt(2, restaurantTable.getId());
             return executeUpdateOnOneItemAndReturnObject(restaurantTable, statement);
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
+    public void updateRestaurantTableStatusIntoOrderCompleted(int tableId, String newStatus) {
+        String sqlStatement = "UPDATE restaurant_table SET " +
+                "status = ? " +
+                "WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setString(1, newStatus);
+            statement.setInt(2, tableId);
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 1) {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
+    public RestaurantTableOrderCompletedDTO findTableWithJoinOrderByTableId(int tableId) {
+        String sqlStatement = "SELECT rt.id, rt.status, rt.is_occupied, bool_and(o.is_ready) AS all_ready FROM restaurant_table rt JOIN orders o ON rt.id = o.table_id WHERE rt.id = ? GROUP BY rt.id, rt.status, rt.is_occupied";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, tableId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new RestaurantTableOrderCompletedDTO(
+                            resultSet.getInt("id"),
+                            resultSet.getString("status"),
+                            resultSet.getBoolean("is_occupied"),
+                            resultSet.getBoolean("all_ready")
+                    );
+                } else {
+                    throw new ResourcesNotFoundException("Table not found: " + tableId);
+                }
+            }
         } catch (SQLException e) {
             throw new ResourceNotAvailable("Database error", e);
         }

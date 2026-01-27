@@ -2,7 +2,6 @@ package org.example.api;
 
 import com.sun.net.httpserver.HttpExchange;
 import org.example.configuration.StacktraceConfig;
-import org.example.dto.OrderItemDTO;
 import org.example.helpers.JsonResponseConverter;
 import org.example.response.ApiResponse;
 import org.example.response.ErrorResponse;

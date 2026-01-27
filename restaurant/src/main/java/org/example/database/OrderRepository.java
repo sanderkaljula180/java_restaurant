@@ -75,6 +75,37 @@ public class OrderRepository {
         }
     }
 
+    public boolean getOrderStatusById(int orderId) {
+        String sqlStatement = "SELECT is_ready FROM orders WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, orderId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("is_ready");
+                } else {
+                    throw new ResourcesNotFoundException("Order item not found: " + orderId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
+    public void updateOrderStatusIntoReady(int orderId) {
+        String sqlStatement = "UPDATE orders SET is_ready = true WHERE id = ?";
+        try (Connection connection = cp.createConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setInt(1, orderId);
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 1) {
+                throw new DatabaseUpdateException("Database update query didn't work: " + statement);
+            }
+        } catch (SQLException e) {
+            throw new ResourceNotAvailable("Database error", e);
+        }
+    }
+
     private Order helperForCreatingOrderObj(ResultSet resultSet) throws SQLException {
         return new Order(
                 resultSet.getInt(1),

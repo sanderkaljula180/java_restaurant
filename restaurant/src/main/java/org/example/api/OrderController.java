@@ -58,4 +58,18 @@ public class OrderController {
         }
     }
 
+    public void updateOrderItemIntoCompleted(HttpExchange httpExchange) throws IOException {
+        if (httpExchange.getRequestMethod().equals("PUT")) {
+            try {
+                JSONObject jsonObject = jsonResponseConverter.convertRequestBodyJsonByteIntoJsonObject(httpExchange);
+                int orderItemId = jsonObject.getInt("orderItemId");
+                orderService.checkIfOrderOrOrderItemIsReady(orderItemId);
+                apiResponse.noContentResponse(httpExchange);
+            } catch (Exception e) {
+                StacktraceConfig.logStackTraceFromThread(e);
+                errorResponse.errorResponse(httpExchange, e);
+            }
+        }
+    }
+
 }
