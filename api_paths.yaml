@@ -1,0 +1,121 @@
+paths:
+  /api/items/:
+    get:
+      summary: Get all items
+      responses: {}
+      description: >-
+        This is a GET request and it is used to "get" data from an endpoint.
+        There is no request body for a GET request, but you can use query
+        parameters to help specify the resource you want data on (e.g., in this
+        request, we have `id=1`).
+
+
+        A successful GET response will have a `200 OK` status, and should
+        include some kind of response body - for example, HTML web content or
+        JSON data.
+  /api/tables/:
+    get:
+      summary: Get all tables
+      responses: {}
+  /api/tables/table_setup/6:
+    get:
+      summary: Setup a table for guests
+      responses: {}
+  /api/tables/occupy/:
+    put:
+      summary: Occupy table
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tableId:
+                  type: integer
+                numberOfQuests:
+                  type: integer
+                waitressId:
+                  type: integer
+            example:
+              tableId: 6
+              numberOfQuests: 6
+              waitressId: 1
+  /api/tables/change_status/ready_for_order:
+    put:
+      summary: Change status into READY_FOR_ORDER
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tableId:
+                  type: integer
+            example:
+              tableId: 6
+  /api/order/add_order:
+    post:
+      summary: Add order
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tableId:
+                  type: integer
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      itemId:
+                        type: integer
+                      quantity:
+                        type: integer
+            example:
+              tableId: 6
+              items:
+                - itemId: 2
+                  quantity: 3
+                - itemId: 3
+                  quantity: 2
+                - itemId: 9
+                  quantity: 1
+                - itemId: 4
+                  quantity: 5
+  /api/order-items:
+    get:
+      summary: Get all order items for kitchen
+      responses: {}
+  /api/order/order-items/is_completed:
+    put:
+      summary: Update order item status into ready
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderItemId:
+                  type: integer
+            example:
+              orderItemId: 13
+  /api/tables/change_status/order_completed:
+    put:
+      summary: Update table status into ORDER_COMPLETED
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tableId:
+                  type: integer
+            example:
+              tableId: 6

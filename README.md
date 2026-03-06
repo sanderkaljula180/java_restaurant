@@ -165,3 +165,4 @@ NOTES:
 So interface is for functionality that has rules that need to be done. Abstract is blueprint for set of things that has a state
 Abstract Class = Identity & State
 Interface = Capability & Rules
+
