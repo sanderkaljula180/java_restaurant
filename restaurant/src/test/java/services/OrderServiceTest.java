@@ -48,7 +48,7 @@ class OrderServiceTest {
             new OrderItemDTO(1, 11, 1, new BigDecimal("7.50"), false)
     );
     private final TableStatusUpdateResponseDTO TABLE_STATUS_RESPONSE =
-            new TableStatusUpdateResponseDTO(1, "OCCUPIED", "WAITING_FOR_ORDER", "Status updated");
+            new TableStatusUpdateResponseDTO(1, "READY_FOR_ORDER", "WAITING_FOR_ORDER", "Status updated");
     private final AddOrderResponseDTO EXPECTED_RESPONSE =
             new AddOrderResponseDTO("Order created", "WAITING_FOR_ORDER", ORDER_ITEMS, new BigDecimal("20.00"));
     private final List<OrderItemsForOrderRequestDTO> REQUESTED_ITEMS = List.of(
@@ -202,10 +202,6 @@ class OrderServiceTest {
                 .hasMessage("Order is already ready");
         verify(orderRepository, never()).updateOrderStatusIntoReady(anyInt());
     }
-
-    // =========================================================================
-    // checkIfOrderOrOrderItemIsReady
-    // =========================================================================
 
     @Test
     void checkIfOrderOrOrderItemIsReady_shouldMarkOrderComplete_whenAllItemsAreReady() {
