@@ -18,10 +18,11 @@ public class JsonResponseConverter {
     }
 
     public <T> JSONObject convertRequestBodyJsonByteIntoJsonObject(HttpExchange httpExchange) throws IOException {
-        InputStream request = httpExchange.getRequestBody();
-        byte[] requestBytes = request.readAllBytes();
-        String jsonRequestString = new String(requestBytes, StandardCharsets.UTF_8);
-        return new JSONObject(jsonRequestString);
+        try (InputStream request = httpExchange.getRequestBody()) {
+            byte[] requestBytes = request.readAllBytes();
+            String jsonRequestString = new String(requestBytes, StandardCharsets.UTF_8);
+            return new JSONObject(jsonRequestString);
+        }
     }
 
     public <T> byte[] convertDTOIntoJsonByte(T dtoToConvert) {

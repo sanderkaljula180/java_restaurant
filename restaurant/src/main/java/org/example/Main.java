@@ -11,7 +11,9 @@ import org.example.configuration.DBConnectionPool;
 import org.example.configuration.HttpServerConfiguration;
 import org.example.database.*;
 import org.example.entities.Order;
+import org.example.helpers.DefaultObjectMapper;
 import org.example.helpers.JsonResponseConverter;
+import org.example.helpers.ObjectMapper;
 import org.example.response.ApiResponse;
 import org.example.response.ErrorResponse;
 import org.example.router.ApiRouter;
@@ -22,6 +24,7 @@ import org.example.services.TableService;
 
 
 import java.io.IOException;
+import java.time.Clock;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -38,9 +41,10 @@ public class Main {
         WaitressRepository waitressRepository = new WaitressRepository(pool);
         OrderRepository orderRepository = new OrderRepository(pool);
         OrderItemRepository orderItemRepository = new OrderItemRepository(pool);
-
+        ObjectMapper objectMapper = new DefaultObjectMapper();
         JsonResponseConverter jsonResponseConverter = new JsonResponseConverter();
         ErrorResponse errorResponse = new ErrorResponse(jsonResponseConverter);
+        Clock clock = Clock.systemDefaultZone();
 
         ItemService itemService = new ItemService(
                 itemsRepository
@@ -58,7 +62,9 @@ public class Main {
                 tableService,
                 orderItemService,
                 orderRepository,
-                itemService
+                itemService,
+                objectMapper,
+                clock
         );
 
         ApiResponse apiResponse = new ApiResponse();

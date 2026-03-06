@@ -8,6 +8,7 @@ import org.example.helpers.Mapper;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderItemService {
@@ -22,17 +23,14 @@ public class OrderItemService {
 
     // I have to send List of OrderItem entities into Repo for multiple VALUES insert.
     // This logic that is down here is almost correct. But I have to calculate price
+    // Add transactiol db
     public List<OrderItemDTO> createOrderItems(List<OrderItemsForOrderRequestDTO> orderItems, int orderId) {
-        List<OrderItem> orderItemsListForDB = orderItems.stream()
-                .map(item -> new OrderItem(
-                        orderId,
-                        item.getItemId(),
-                        itemService.reduceItemQuantity(item.getQuantity(), item.getItemId()),
-                        orderItemPrice(item.getQuantity(), item.getItemId()),
-                        false
-                )).toList();
-        orderItemRepository.insertNewOrderItems(orderItemsListForDB);
-        return orderItemsListForDB.stream().map(item -> new OrderItemDTO(
+        reduceItemsQuantity(orderItems);
+
+        List<OrderItem> orderItemsList = buildOrderItemsList(orderItems, orderId);
+        orderItemRepository.insertNewOrderItems(orderItemsList);
+
+        return orderItemsList.stream().map(item -> new OrderItemDTO(
                 item.getOrder_id(),
                 item.getItem_id(),
                 item.getQuantity(),
@@ -43,6 +41,23 @@ public class OrderItemService {
 
     public List<OrderItemsForKitchenDTO> getAllOrderItems() {
         return orderItemRepository.getAllOrderItemsForKitchen();
+    }
+
+    private List<OrderItem> buildOrderItemsList(List<OrderItemsForOrderRequestDTO> orderItems, int orderId) {
+        return orderItems.stream()
+                .map(item -> new OrderItem(
+                        orderId,
+                        item.getItemId(),
+                        item.getQuantity(),
+                        orderItemPrice(item.getQuantity(), item.getItemId()),
+                        false
+                )).toList();
+    }
+
+    private void reduceItemsQuantity(List<OrderItemsForOrderRequestDTO> orderItems) {
+        for (var i : orderItems) {
+            itemService.reduceItemQuantity(i.getQuantity(), i.getItemId());
+        }
     }
 
     private BigDecimal orderItemPrice(int quantity, int itemId) {

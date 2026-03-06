@@ -18,10 +18,9 @@ public class HttpServerConfiguration {
     public HttpServer httpServer() throws IOException {
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(8000),0);
         apiRouter.serverRouter(httpServer);
-        // LEARN ABOUT THIS MORE. WHAT IS EXECUTOR?
         httpServer.setExecutor(null);
         return httpServer;
-        
+
     }
 
 
